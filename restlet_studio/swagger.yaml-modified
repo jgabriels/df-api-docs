@@ -1,0 +1,1827 @@
+basePath: /api
+consumes:
+  - application/json
+definitions:
+  alert:
+    properties:
+      days_of_week:
+        description: 'Limit the days that alerts are sent to the days listed. Send an array of strings. Valid strings are ''Sun'',''Mon'',''Tue'',''Wed'',''Thu'',''Fri'',and ''Sat''.'
+        type: object
+      email_address:
+        description: The address for the alert.
+        type: string
+      end_hour:
+        description: Has the same values as start_hour
+        type: object
+      expires_after:
+        description: The last day the alert will be valid. Valid time frames are from today until one year into the future.
+        type: object
+      list_order:
+        description: Any value that is valid in the boards sort_order is also valid here.
+        type: object
+      list_type:
+        description: 'This specify the type of list that is returned, including disabling the list from being sent at all. Valid values are ''complete-list'',''only-new'', and ''not-active''.'
+        type: object
+      minute_frequency:
+        description: 'How many minutes to wait before sending another alert. Valid values are ''15'',''30'',''60'',''120'',''240'',''480'', and ''1440''.'
+        type: object
+      search:
+        properties:
+          date_available:
+            format: date
+            type: string
+          date_received:
+            format: date
+            type: string
+          destination_city:
+            type: string
+          destination_radius:
+            type: integer
+          destination_state:
+            type: string
+          load_size:
+            type: string
+          origin_city:
+            type: string
+          origin_radius:
+            type: integer
+          origin_state:
+            type: string
+          search_id:
+            type: integer
+          search_type:
+            type: string
+          trailers:
+            type: string
+        type: object
+      send_type:
+        description: 'What method to send the alert list. Valid types are ''email'',or ''text''.'
+        type: object
+      start_hour:
+        description: A value between 3-21 corresponding to the hour of the day.
+        type: object
+      time_zone:
+        description: 'A number between -1 and 2. -1 = EST, 0 = CST, 1 = MST, 2 = PST'
+        type: object
+    required:
+      - days_of_week
+      - email_address
+      - end_hour
+      - expires_after
+      - list_order
+      - list_type
+      - minute_frequency
+      - search
+      - send_type
+      - start_hour
+      - time_zone
+    type: object
+    x-restlet:
+      section: ALERTS
+  alert_list:
+    description: 'A hash containing a list of objects. Each entry should have 1 alert object, and 1 search object, and 2 integer counts. One for the number of new loads, and one for the number of total loads that match the search critera.'
+    example: |-
+      {
+        "data": [
+          "{}",
+          "{}"
+        ]
+      }
+    items:
+      $ref: '#/definitions/alert'
+    type: array
+    x-restlet:
+      section: ALERTS
+  bill_user:
+    properties:
+      billing_address:
+        description: 'first_name, last_name, address, city, state, and phone all needed. '
+        type: object
+      cc_data:
+        description: 'This is optional if a check number is provided. '
+        type: object
+      check_data:
+        description: 'This is optional if a credit number is provided. '
+        type: object
+      promo_code:
+        description: 'Optional Promo Code for a discount. '
+        type: string
+    required:
+      - billing_address
+    type: object
+    x-restlet:
+      section: BILLINGS
+  board_request:
+    properties:
+      alert_id:
+        description: 'By specifying an alert_id we will record the loads seen by this user, and associate it with their alert. '
+        example: 5555
+        type: integer
+      count:
+        description: 'If included this will return a total count instead of a list. '
+        type: boolean
+      destination_city:
+        description: 'Must be at least 2 characters. '
+        example: chicago
+        type: string
+      destination_radius:
+        description: 'If both city and state are specified, it will search for all entries within # Miles of the city. '
+        type: integer
+      destination_state:
+        description: 'If multiple states are entered the city field will be ignored, and a multi state search will be performed.'
+        items:
+          type: string
+        type: array
+      item_count:
+        description: 'This is how many board objects will be returned in the search. By default it will return 50 items per page. Max is 100, minimum is 1. '
+        type: integer
+      load_size:
+        default: Full
+        description: 'This is only valid on load boards. Valid values are "Full" and "Partial"". '
+        type: string
+      only_new:
+        description: 'This will only return unseen results. This requires an alert_id to be specified. '
+        type: boolean
+      origin_city:
+        description: 'Must be at least 3 characters. '
+        example: chillicothe
+        type: string
+      origin_radius:
+        description: 'If both city and state, it will search for all entries within # Miles of the city. '
+        type: integer
+      origin_state:
+        description: 'If multiple states are entered the city field will be ignored, and a multi state search will be performed.'
+        items:
+          type: string
+        type: array
+      page_number:
+        description: The page you want to get. Will return an empty board on an invalid page.
+        type: integer
+      ship_date:
+        description: 'Limit the board to only show loads with X ship date. '
+        items:
+          type: string
+        type: array
+      sort_parameter:
+        description: Use almost any one of the columns of a returned board.
+        type: string
+      trailer_type:
+        description: 'A string array of valid trailer types to limit the search. '
+        items:
+          type: string
+        type: array
+    type: object
+    x-restlet:
+      section: BOARDS
+  board_response:
+    example: |-
+      {
+        "list": "{}",
+        "page_number": "{}",
+        "total_items": "{}",
+        "total_pages": 0
+      }
+    properties:
+      list:
+        description: A list of entries for this board.
+        type: object
+      page_number:
+        description: The page you are on.
+        type: object
+      total_items:
+        description: A count of all the entry objects for the specified search.
+        type: object
+      total_pages:
+        description: 'A count of the # of pages based on the search parameters.'
+        format: int32
+        type: integer
+    type: object
+    x-restlet:
+      section: BOARDS
+  create_multiple_postings:
+    properties:
+      contact_fax:
+        description: 'By default we use the number listed in their profile. '
+        type: string
+      contact_name:
+        description: 'The dispatchers name. By default we use the profile information. '
+        type: string
+      contact_phone:
+        description: 'By default we use the number listed in their profile. '
+        type: string
+      delete_current_before_posting:
+        description: 'An optional argument that will first delete all of the users loads before entering the fresh list. Caution, this will still delete everything even if some of the entries fail to be created. '
+        type: boolean
+      list:
+        description: 'Valid types are &quot;loads&quot;, &quot;trucks&quot;, &quot;private_loads&quot;, &quot;private_trucks&quot;, &quot;test_loads&quot;, and &quot;test_trucks&quot; '
+        items:
+          type: string
+        type: array
+    required:
+      - list
+    type: object
+    x-restlet:
+      section: POSTINGS
+  create_notes:
+    properties:
+      body:
+        type: string
+      entry_id:
+        description: 'The entry to associate the note with. '
+        type: integer
+      title:
+        description: 'Subject of the note. '
+        type: string
+    required:
+      - body
+      - entry_id
+      - title
+    type: object
+    x-restlet:
+      section: BOARDS
+  create_profile:
+    properties:
+      address:
+        type: string
+      city:
+        type: string
+      company:
+        description: 'Company name. '
+        type: string
+      contact_extension:
+        type: string
+      contact_name:
+        description: 'Contact name. '
+        type: string
+      contact_number:
+        type: string
+      dot_number:
+        type: string
+      fax_number:
+        type: string
+      mc_number:
+        type: string
+      mobile_carrier:
+        type: integer
+      mobile_number:
+        type: string
+      password:
+        description: 'Needed to set up the user/pass for authentication. '
+        type: string
+      state:
+        type: string
+      web_page:
+        type: string
+      zip:
+        type: string
+    required:
+      - address
+      - city
+      - company
+      - contact_extension
+      - contact_name
+      - contact_number
+      - dot_number
+      - fax_number
+      - mc_number
+      - mobile_carrier
+      - mobile_number
+      - password
+      - state
+      - web_page
+      - zip
+    type: object
+    x-restlet:
+      section: PROFILES
+  end-user-token:
+    properties:
+      end-user-token:
+        description: On success and end-user-token is returned.
+        example: XX423ASOEUHT4AESUTH
+        type: string
+    type: object
+    x-restlet:
+      section: END_USER_AUTHENTICATIONS
+  error_object:
+    example:
+      code: 1
+      description: The e-mail address must be valid.
+      error: Generic Validation
+    properties:
+      code:
+        type: integer
+      description:
+        type: string
+      error:
+        type: string
+    required:
+      - code
+      - description
+      - error
+    type: object
+  get_billing_response:
+    example: |-
+      {
+        "amount": 0,
+        "promo_conditions": "{}"
+      }
+    properties:
+      amount:
+        description: Amount How much the user will be charged. This may be 0.
+        format: int32
+        type: integer
+      promo_conditions:
+        description: Any extra text relating to the promo code. For example "15 Day Free. 34.95 charged after that."
+        type: object
+    type: object
+    x-restlet:
+      section: BILLINGS
+  get_boards_notes_response:
+    example: |-
+      {
+        "entry_id": [
+          "entry_id",
+          "entry_id"
+        ]
+      }
+    properties:
+      entry_id:
+        description: 'A hash with each entry id as the name, and a note_object as the value.'
+        items:
+          type: string
+        type: array
+    type: object
+    x-restlet:
+      section: BOARDS
+  get_closest_city_response:
+    example: |-
+      {
+        "city": "city",
+        "state_abbreviation": "{}",
+        "state_name": "{}"
+      }
+    properties:
+      city:
+        type: string
+      state_abbreviation:
+        type: object
+      state_name:
+        type: object
+    type: object
+    x-restlet:
+      section: LOCATIONS
+  get_custom_categories_response:
+    example:
+      categories:
+        - categories
+        - categories
+    properties:
+      categories:
+        description: 'A list of each category, type and it''s corresponding position.'
+        items:
+          type: string
+        type: array
+    type: object
+  get_email_exists_response:
+    example:
+      exists: true
+    properties:
+      exists:
+        description: Returns a true value if it is associated with an account.
+        type: boolean
+    type: object
+  get_hidden_companies_response:
+    example:
+      company_name:
+        - company_name
+        - company_name
+    properties:
+      company_name:
+        description: A subset of companies that need to be marked as hidden.
+        items:
+          type: string
+        type: array
+    type: object
+  get_hidden_entries:
+    example:
+      entry_id:
+        - entry_id
+        - entry_id
+    properties:
+      entry_id:
+        description: A subset of entries that need to be marked as hidden.
+        items:
+          type: string
+        type: array
+    type: object
+  get_location_distance_response:
+    example: |-
+      {
+        "distance": 0
+      }
+    properties:
+      distance:
+        description: A number representing the miles between the two locations.
+        format: int32
+        type: integer
+    type: object
+    x-restlet:
+      section: LOCATIONS
+  get_posting_type_response:
+    example:
+      posting_list:
+        - posting_list
+        - posting_list
+    properties:
+      posting_list:
+        description: A list of posting objects you can iterate over.
+        items:
+          type: string
+        type: array
+    type: object
+  get_state_list_response:
+    example:
+      state_totals: '{     "MS": 1449,     "NS": 24,     "VT": 145,     "MD": 520,     "ID": 2091,     "SK": 126,     "WA": 2207,     "SC": 1619,     "VA": 1781,     "PQ": 10,     "ON": 270,     "KS": 969,     "NE": 1386,     "OR": 2984,     "WI": 2714,     "GA": 3184,     "IN": 3363,     "KY": 1731,     "NV": 534,     "NC": 1824,     "BC": 124,     "DC": 7,     .... }'
+    properties:
+      state_totals:
+        description: A hash of state totals.
+        example: '{     "MS": 1449,     "NS": 24,     "VT": 145,     "MD": 520,     "ID": 2091,     "SK": 126,     "WA": 2207,     "SC": 1619,     "VA": 1781,     "PQ": 10,     "ON": 270,     "KS": 969,     "NE": 1386,     "OR": 2984,     "WI": 2714,     "GA": 3184,     "IN": 3363,     "KY": 1731,     "NV": 534,     "NC": 1824,     "BC": 124,     "DC": 7,     .... }'
+        type: object
+    type: object
+  login_credentials:
+    properties:
+      login:
+        description: 'The e-mail, or username information needed to log in. '
+        type: string
+      realm:
+        description: 'This specifies who to log in with. If left blank we will assume email/password. Valid realms are username, email, facebook(not implemneted), google(not implemented), and linkedin(not implemented). '
+        enum:
+          - username
+          - email
+        type: string
+      secret:
+        description: 'The password, or token required for this login. '
+        type: string
+    required:
+      - login
+      - realm
+      - secret
+    type: object
+  mark_hidden_companies:
+    properties:
+      company_name:
+        description: 'The comapny that need to be marked as hidden. '
+        type: string
+    required:
+      - company_name
+    type: object
+  mobile_carrier_response:
+    example:
+      carrier_id: 0
+      carrier_name: '{}'
+    properties:
+      carrier_id:
+        description: The carrier ID.
+        format: int32
+        type: integer
+      carrier_name:
+        description: Their mobile carrier.
+        type: object
+    type: object
+  patch_alert_properties:
+    properties:
+      days_of_week:
+        description: 'Limit the days that alerts are sent to the days listed. Send an array of strings. Valid strings are ''Sun'',''Mon'',''Tue'',''Wed'',''Thu'',''Fri'',and ''Sat''.'
+        type: object
+      end_hour:
+        description: Has the same values as start_hour
+        type: object
+      expires_after:
+        description: The last day the alert will be valid. Valid time frames are from today until one year into the future.
+        type: object
+      list_order:
+        description: Any value that is valid in the boards sort_order is also valid here.
+        type: object
+      list_type:
+        description: 'This specify the type of list that is returned, including disabling the list from being sent at all. Valid values are ''complete-list'',''only-new'', and ''not-active''.'
+        type: object
+      minute_frequency:
+        description: 'How many minutes to wait before sending another alert. Valid values are ''15'',''30'',''60'',''120'',''240'',''480'', and ''1440''.'
+        type: object
+      send_type:
+        description: 'What method to send the alert list. Valid types are ''email'',or ''text''.'
+        type: object
+      start_hour:
+        description: A value between 3-21 corresponding to the hour of the day.
+        type: object
+      time_zone:
+        description: 'A number between -1 and 2. -1 = EST, 0 = CST, 1 = MST, 2 = PST'
+        type: object
+    type: object
+  patch_profile:
+    properties:
+      address:
+        description: ''
+        type: string
+      city:
+        description: ''
+        type: string
+      company:
+        description: 'Company name. '
+        type: string
+      contact_extension:
+        description: ''
+        type: string
+      contact_name:
+        description: 'Contact name. '
+        type: string
+      contact_number:
+        description: ''
+        type: string
+      dot_number:
+        description: ''
+        type: string
+      fax_number:
+        description: ''
+        type: string
+      mc_number:
+        description: ''
+        type: string
+      mobile_carrier:
+        description: ''
+        type: integer
+      mobile_number:
+        description: ''
+        type: string
+      state:
+        description: ''
+        type: string
+      web_page:
+        description: ''
+        type: string
+      zip:
+        description: ''
+        type: string
+    required:
+      - address
+      - city
+      - company
+      - contact_extension
+      - contact_name
+      - contact_number
+      - dot_number
+      - fax_number
+      - mc_number
+      - mobile_carrier
+      - mobile_number
+      - state
+      - web_page
+      - zip
+    type: object
+  post_object_model:
+    properties:
+      comment:
+        type: object
+      custom_id:
+        description: A unique identifier a user can provide for their own records.
+        type: object
+      destination_city:
+        description: For truck type entries this is optional.
+        type: object
+      destination_state:
+        description: For truck type entries this is optional.
+        type: object
+      height:
+        type: object
+      length:
+        type: object
+      load_size:
+        description: 'Require for load type entries only. This field expects one of the 2 following terms, full or partial.'
+        type: object
+      origin_city:
+        description: Required for all entry types.
+        type: object
+      origin_state:
+        description: 'Required, 2 character limit.'
+        type: object
+      other_trailer_types:
+        description: This may be empty.
+        type: object
+      pay_rate:
+        type: object
+      posting_id:
+        description: A unique id in our system for the user's entry.
+        format: int32
+        type: integer
+      receive_date:
+        type: object
+      ship_date:
+        type: object
+      trailer_type:
+        description: This can have 1 or more standard trailer types.
+        type: object
+      weight:
+        type: object
+      width:
+        type: object
+    required:
+      - origin_city
+      - origin_state
+      - posting_id
+      - ship_date
+      - trailer_type
+    type: object
+  post_optin_code_response:
+    example:
+      optin_code: optin_code
+    properties:
+      optin_code:
+        description: A text string with the code sent.
+        type: string
+    type: object
+  post_posting_multiple_response:
+    example:
+      success: true
+    properties:
+      success:
+        description: 'This will return true, and have a unique location in the location header.'
+        type: boolean
+    type: object
+  post_posting_type_action_body:
+    properties:
+      source_id:
+        description: The posting id of the posting you are moving or copying. Optional for create.
+        type: object
+      source_posting:
+        description: The posting_type where you are moving or copying the posting from. Optional for create. Items can only be moved to like types. loads -> private_private loads.
+        type: string
+    required:
+      - source_id
+      - source_posting
+    type: object
+  post_status:
+    properties:
+      success:
+        type: integer
+    type: object
+  profile_model:
+    example:
+      address: P.O. Box 131
+      city: Chillicothe
+      company: Direct Freight
+      contact_extension: x333
+      contact_name: Joe Doe
+      contact_number: 555-555-5555
+      dot_number: 123456
+      fax_number: 555-555-5555
+      mc_number: 123456
+      mobile_carrier: Company_X
+      mobile_number: 555-555-1234
+      state: MO
+      web_page: 'http://www.directfreight.com'
+      zip: 55555
+    properties:
+      address:
+        description: The address associated with their entries.
+        type: string
+      city:
+        type: string
+      company:
+        type: string
+      contact_extension:
+        type: string
+      contact_name:
+        description: Contact name.
+        type: string
+      contact_number:
+        type: string
+      dot_number:
+        type: string
+      fax_number:
+        type: string
+      mc_number:
+        type: string
+      mobile_carrier:
+        type: string
+      mobile_number:
+        type: string
+      state:
+        type: string
+      web_page:
+        type: string
+      zip:
+        type: string
+    type: object
+  rename_document:
+    properties:
+      current_name:
+        description: 'The document to be renamed. '
+        type: string
+      new_name:
+        description: 'Replacement name. '
+        type: string
+    required:
+      - current_name
+      - new_name
+    type: object
+  success_status_response:
+    example:
+      status: status
+    properties:
+      status:
+        description: 'A text status like OPTIN, NORESPONSE, OPTOUT.'
+        type: string
+    type: object
+  toggle_hidden_companies:
+    properties:
+      company_id:
+        description: 'The company name that need to be toggled. '
+        type: string
+    required:
+      - company_id
+    type: object
+  toggle_hidden_entries:
+    properties:
+      entry_id:
+        description: 'The entry that need to be toggled. '
+        items:
+          type: string
+        type: array
+    required:
+      - entry_id
+    type: object
+  update_notes:
+    properties:
+      body:
+        type: string
+      title:
+        description: 'Subject of the note. '
+        type: string
+    required:
+      - body
+      - title
+    type: object
+    x-restlet:
+      section: BOARDS
+  upload_document:
+    properties:
+      The:
+        description: 'file to be uploaded. '
+        type: object
+    required:
+      - The
+    type: object
+  user:
+    properties:
+      email:
+        description: 'This must be a valid e-mail. '
+        type: string
+      password:
+        description: 'Currently this is a 6-10 digit alphanumeric password. '
+        type: string
+    required:
+      - email
+      - password
+    type: object
+host: www.directfreight.com
+info:
+  description: |-
+    In order to use the Direct Freight API please first contact us to get an API Token. This token needs to be sent as a HTTP header argument in every request to our API.
+
+    api-token="SECRET KEY"
+
+    Please keep your api-token a secret. If the token is compromised please contact us to get a new one.
+
+    This api token authenticates your application and gives it access to the API.
+
+    The API token should not be confused with the end-user-token. That token is given to you via the end_user_authentications endpoint when the user logs in. This token is needed in order to use certain features, and get certain sensitive information.
+
+    Both Tokens are stateless, and delivered via the HTTP headers.
+  title: Direct Freight API
+  version: 2.0.0
+paths:
+  '/alerts/{board_type}':
+    delete:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - description: Specify to just delete some alerts.
+          in: query
+          items:
+            type: string
+          name: alert_id
+          required: true
+          type: array
+      responses:
+        '204':
+          description: successful operation
+      summary: STAGE=UNK Delete an alert.
+      tags:
+        - alerts
+    get:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - description: only get a subset of alerts. As this is a get request this is specified as a query string parameter.
+          in: query
+          items:
+            type: integer
+          name: alert_id
+          required: false
+          type: array
+      responses:
+        '200':
+          description: On success will return a list of alerts.
+          schema:
+            $ref: '#/definitions/alert_list'
+      summary: STAGE=UNK Get a list of alerts. You can optionally limit the list by specifcying alerts by their alert_id.
+      tags:
+        - alerts
+    parameters:
+      - description: 'Valid types are "loads", and "trucks".'
+        enum:
+          - loads
+          - trucks
+        in: path
+        name: board_type
+        required: true
+        type: string
+    patch:
+      consumes: []
+      description: Search objects are set at creation. You cannot modify them after the alert has been created.
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - description: Specify which alert you are updating.
+          in: query
+          name: alert_id
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/patch_alert_properties'
+      responses:
+        '204':
+          description: Returned on response.
+      summary: STAGE=UNK Update an alert.
+      tags:
+        - alerts
+    post:
+      consumes: []
+      description: 'Any parameter that is defined here and is also defined on the boards GET, follows the same rules.'
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/alert'
+      responses:
+        '201':
+          $ref: '#/responses/object_created'
+      summary: STAGE=UNK Create an alert.
+      tags:
+        - alerts
+    x-restlet:
+      section: ALERTS
+  /billings:
+    get:
+      description: 'Will return how much the end user will be charged to upgrade. It will not charge the user, or consume the promo code.'
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - description: 'The promo code. '
+          in: query
+          name: promo_code
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/get_billing_response'
+      summary: STAGE=UNK Returns the amount the end user will be charged. If a promo code is present return adjusted amount. If there are special conditions a string with the promo code benefits will also be returned.
+      tags:
+        - billings
+    post:
+      consumes: []
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/bill_user'
+      responses:
+        '201':
+          $ref: '#/responses/object_created'
+      summary: 'STAGE=UNK This function will attempt to process a payment, and upgrade a non subscibed user. '
+      tags:
+        - billings
+    x-restlet:
+      section: BILLINGS
+  /boards/hidden_companies:
+    delete:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - description: The company that need to be marked as not hidden.
+          in: query
+          name: company_id
+          required: true
+          type: string
+      responses:
+        '204':
+          description: successful operation
+      summary: STAGE=UNK Mark a company as not hidden.
+      tags:
+        - boards
+    get:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - description: A list of id's to check if any should be visually hidden.
+          in: query
+          items:
+            type: string
+          name: company_name
+          required: true
+          type: array
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/get_hidden_companies_response'
+      summary: STAGE=UNK Get a list of companies that should be hidden.
+      tags:
+        - boards
+    patch:
+      consumes: []
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/toggle_hidden_companies'
+      responses:
+        '204':
+          description: successful operation
+      summary: STAGE=UNK Toggle one or more company between hidden and unhidden.
+      tags:
+        - boards
+    post:
+      consumes: []
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/mark_hidden_companies'
+      responses:
+        '201':
+          $ref: '#/responses/object_created'
+      summary: STAGE=UNK Mark a set of companies as hidden.
+      tags:
+        - boards
+    x-restlet:
+      section: BOARDS
+  /boards/hidden_entries:
+    delete:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - description: 'The entry that need to be marked as not hidden. '
+          in: query
+          name: entry_id
+          required: true
+          type: string
+      responses:
+        '204':
+          description: successful operation
+      summary: STAGE=UNK Mark a set of entries as not hidden.
+      tags:
+        - boards
+    get:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - description: A list of id's to check if any should be visually hidden.
+          in: query
+          items:
+            type: string
+          name: entry_id
+          required: true
+          type: array
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/get_hidden_entries'
+      summary: STAGE=UNK Get a list of entries that should be hidden.
+      tags:
+        - boards
+    patch:
+      consumes: []
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/toggle_hidden_entries'
+      responses:
+        '204':
+          description: successful operation
+      summary: STAGE=UNK Toggle one or more entry between hidden and unhidden.
+      tags:
+        - boards
+    post:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - description: 'The entry that need to be marked as hidden. '
+          in: query
+          items:
+            type: string
+          name: entry_id
+          required: true
+          type: array
+      responses:
+        '201':
+          $ref: '#/responses/object_created'
+      summary: STAGE=UNK Mark a set of entries as hidden.
+      tags:
+        - boards
+    x-restlet:
+      section: BOARDS
+  /boards/notes:
+    delete:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - description: 'The entry to associate the note with. '
+          in: query
+          name: note_id
+          required: true
+          type: string
+      responses:
+        '204':
+          description: successful operation
+      summary: STAGE=UNK Delete a note.
+      tags:
+        - boards
+    get:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - description: 'Optionally just check if certain loads have notes associated with them. '
+          in: query
+          items:
+            type: string
+          name: entry_id
+          required: false
+          type: array
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/get_boards_notes_response'
+      summary: STAGE=UNK Get notes that this user has written.
+      tags:
+        - boards
+    patch:
+      consumes: []
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/update_notes'
+      responses:
+        '204':
+          description: successful operation
+      summary: STAGE=UNK Update a note.
+      tags:
+        - boards
+    post:
+      consumes: []
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/create_notes'
+      responses:
+        '201':
+          $ref: '#/responses/object_created'
+      summary: STAGE=UNK Create a new note.
+      tags:
+        - boards
+    x-restlet:
+      section: BOARDS
+  '/boards/{board_type}':
+    parameters:
+      - description: 'Valid types are "loads", and "trucks".'
+        enum:
+          - loads
+          - trucks
+        in: path
+        name: board_type
+        required: true
+        type: string
+    post:
+      consumes: []
+      description: This is the primary search method.
+      parameters:
+        - $ref: '#/parameters/end-user-token-optional'
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/board_request'
+      responses:
+        '200':
+          description: Returns a list matching your search.
+          schema:
+            $ref: '#/definitions/board_response'
+        '422':
+          description: Unprocessable Entity. More information provided in the return object.
+          schema:
+            $ref: '#/definitions/error_object'
+      summary: Get a board.
+      tags:
+        - boards
+    x-restlet:
+      section: BOARDS
+  '/boards/{board_type}/state_list':
+    get:
+      parameters: []
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/get_state_list_response'
+      summary: STAGE=UNK A convenience method to get totals by state.
+      tags:
+        - boards
+    parameters:
+      - description: 'Valid types are "loads", and "trucks".'
+        enum:
+          - loads
+          - trucks
+        in: path
+        name: board_type
+        required: true
+        type: string
+    x-restlet:
+      section: BOARDS
+  /credit_reports:
+    get:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - description: A special id returned with the board entries.
+          in: query
+          name: credit_report_id
+          required: true
+          type: string
+        - description: Return format. Currently only supports html and json.
+          in: query
+          name: format
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+      summary: STAGE=UNK Request access to a credit report.
+      tags:
+        - credit_reports
+    x-restlet:
+      section: CREDIT_REPORTS
+  /end_user_authentication/users:
+    post:
+      consumes: []
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/user'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/end-user-token'
+        '422':
+          description: Unprocessable Entity. More information provided in the return object.
+          schema:
+            $ref: '#/definitions/error_object'
+      summary: STAGE=UNK Create a new user.
+      tags:
+        - end_user_authentications
+    x-restlet:
+      section: END_USER_AUTHENTICATIONS
+  /end_user_authentications:
+    delete:
+      description: This logs a user out. the end-user-token will no longer be valid.
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+      responses:
+        '204':
+          description: Will not return content on a successful logout.
+      summary: STAGE=UNK Logs a user out.
+      tags:
+        - end_user_authentications
+    get:
+      parameters:
+        - $ref: '#/parameters/end-user-token-optional'
+      responses:
+        '200':
+          description: successful operation
+          examples:
+            application/json: '{status: "Subscribed"}'
+          schema:
+            properties:
+              status:
+                description: 'Will return the logged in user''s status. Valid status''s are "Subscribed", "Posting", "Overdue", or "Not Logged In".'
+                type: string
+            type: object
+      summary: STAGE=UNK Get current authentication level for the user.
+      tags:
+        - end_user_authentications
+    post:
+      consumes: []
+      description: 'This function sends login credentials, and retrieves a stateless token.'
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/login_credentials'
+      responses:
+        '201':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/end-user-token'
+        '422':
+          description: Unprocessable Entity. More information provided in the return object.
+          schema:
+            $ref: '#/definitions/error_object'
+      summary: STAGE=UNK Logs a user in.
+      tags:
+        - end_user_authentications
+    x-restlet:
+      section: END_USER_AUTHENTICATIONS
+  /end_user_authentications/dates:
+    get:
+      parameters: []
+      responses:
+        '200':
+          description: successful operation
+          examples:
+            application/json:
+              now: now
+          schema:
+            properties:
+              now:
+                description: The current date and time based on our server.
+                type: string
+            type: object
+      summary: STAGE=UNK Gets an authoritative date_time string.
+      tags:
+        - end_user_authentications
+    x-restlet:
+      section: END_USER_AUTHENTICATIONS
+  /end_user_authentications/passwords:
+    get:
+      parameters:
+        - description: The user e-mail to send a password to if valid.
+          in: query
+          name: email
+          required: true
+          type: string
+      responses:
+        '200':
+          description: This will return a success even if the e-mail is not in our records.
+        '422':
+          description: Unprocessable Entity. More information provided in the return object.
+          schema:
+            $ref: '#/definitions/error_object'
+      summary: STAGE=UNK Request a forgotten password.
+      tags:
+        - end_user_authentications
+    patch:
+      consumes: []
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - in: body
+          name: body
+          required: true
+          schema:
+            properties:
+              new_password:
+                description: The user's new password.
+                type: string
+              old_password:
+                description: Thee user's old password.
+                type: string
+            required:
+              - new_password
+              - old_password
+            type: object
+      responses:
+        '204':
+          description: A successful operation.
+        '422':
+          description: Unprocessable Entity. More information provided in the return object.
+          schema:
+            $ref: '#/definitions/error_object'
+      summary: STAGE=UNK Update a users password.
+      tags:
+        - end_user_authentications
+    x-restlet:
+      section: END_USER_AUTHENTICATIONS
+  /location/distance:
+    get:
+      parameters:
+        - in: query
+          name: origin_city
+          required: true
+          type: string
+        - in: query
+          name: origin_state
+          required: true
+          type: string
+        - in: query
+          items:
+            type: string
+          name: destination_city
+          required: true
+          type: array
+        - in: query
+          items:
+            type: string
+          name: destination_state
+          required: true
+          type: array
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/get_location_distance_response'
+      summary: STAGE=UNK Get the distance between 2 locations. This is used to calculate dead head miles.
+      tags:
+        - locations
+    x-restlet:
+      section: LOCATIONS
+  /locations/closest_city:
+    get:
+      parameters:
+        - format: float
+          in: query
+          name: latitude
+          required: true
+          type: number
+        - format: float
+          in: query
+          name: longitude
+          required: true
+          type: number
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/get_closest_city_response'
+      summary: STAGE=UNK Will return the closest city to a lat/lon point.
+      tags:
+        - locations
+    x-restlet:
+      section: LOCATIONS
+  /locations/partial_match:
+    get:
+      parameters:
+        - description: Min 2 characters.
+          in: query
+          name: term
+          required: true
+          type: string
+        - description: '"state", and "city" will return only returns only the respective information for that search type. Misspelling, will default to city.'
+          in: query
+          name: search_type
+          required: false
+          type: string
+      responses:
+        '200':
+          description: successful operation
+      summary: 'STAGE=UNK A string of a partial city or state name, and returns a list of possible matches.'
+      tags:
+        - locations
+    x-restlet:
+      section: LOCATIONS
+  '/postings/custom_categories/{category_type}':
+    delete:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - description: To just delete information about some postings.
+          in: query
+          items:
+            type: string
+          name: category_id
+          required: false
+          type: array
+      responses:
+        '204':
+          description: 200 OK
+      summary: 'STAGE=UNK Delete some or all custom columns, or custom_column data.'
+      tags:
+        - postings
+    get:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - description: To just return information about some postings.
+          in: query
+          items:
+            type: string
+          name: category_id
+          required: false
+          type: array
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/get_custom_categories_response'
+      summary: 'STAGE=UNK Get a list of custom columns, or custom_column data.'
+      tags:
+        - postings
+    parameters:
+      - description: 'Valid types are "names", and "data".'
+        in: path
+        name: category_type
+        required: true
+        type: string
+    patch:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+      responses:
+        '204':
+          description: successful operation
+      summary: 'STAGE=UNK Update a category name, or value.'
+      tags:
+        - postings
+    post:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+      responses:
+        '201':
+          $ref: '#/responses/object_created'
+      summary: 'STAGE=UNK Create new category names, or add new data.'
+      tags:
+        - postings
+    x-restlet:
+      section: POSTINGS
+  '/postings/multiple/{posting_type}':
+    parameters:
+      - description: 'Valid types are "loads", "trucks", "private_loads", "private_trucks", "test_loads", and "test_trucks"'
+        enum:
+          - loads
+          - trucks
+          - private_loads
+          - private_trucks
+          - test_loads
+          - test_trucks
+        in: path
+        name: posting_type
+        required: true
+        type: string
+    post:
+      consumes: []
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/create_multiple_postings'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/post_posting_multiple_response'
+      summary: 'STAGE=UNK Create, multiple entries at once. This is a convenience method.'
+      tags:
+        - postings
+    x-restlet:
+      section: POSTINGS
+  '/postings/{posting_type}':
+    delete:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - description: You must specify which entry to remove.
+          in: query
+          items:
+            type: string
+          name: posting_id
+          required: true
+          type: array
+      responses:
+        '204':
+          description: success operation
+      summary: Remove one or more postings.
+      tags:
+        - postings
+    get:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - description: To just return information about some postings.
+          in: query
+          items:
+            type: string
+          name: posting_id
+          required: false
+          type: array
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/get_posting_type_response'
+      summary: Get posts by this user.
+      tags:
+        - postings
+    parameters:
+      - description: 'Valid types are "loads", "trucks", "private_loads", "private_trucks", "test_loads", and "test_trucks"'
+        enum:
+          - loads
+          - trucks
+          - private_loads
+          - private_trucks
+          - test_loads
+          - test_trucks
+        in: path
+        name: posting_type
+        required: true
+        type: string
+    patch:
+      consumes: []
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/post_object_model'
+      responses:
+        '204':
+          description: successful operation
+      summary: STAGE=UNK Update an posting.
+      tags:
+        - postings
+    post:
+      consumes: []
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/post_object_model'
+      responses:
+        '201':
+          $ref: '#/responses/object_created'
+      summary: Create a posting
+      tags:
+        - postings
+    x-restlet:
+      section: POSTINGS
+  '/postings/{posting_type}/{action}':
+    parameters:
+      - description: 'Valid types are "loads", "trucks", "private_loads", "private_trucks", "test_loads", and "test_trucks"'
+        enum:
+          - loads
+          - trucks
+          - private_loads
+          - private_trucks
+          - test_loads
+          - test_trucks
+        in: path
+        name: posting_type
+        required: true
+        type: string
+      - description: 'Specified in the url. Valid types are "copy", and "move"'
+        in: path
+        name: action
+        required: true
+        type: string
+    post:
+      consumes: []
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/post_posting_type_action_body'
+      responses:
+        '201':
+          $ref: '#/responses/object_created'
+      summary: STAGE=UNK Copy or Move an posting.
+      tags:
+        - postings
+    x-restlet:
+      section: POSTINGS
+  /profiles:
+    get:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/profile_model'
+      summary: STAGE=UNK Request the logged in user's profile.
+      tags:
+        - profiles
+    patch:
+      consumes: []
+      description: Please send in at least one field to be updated.
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/patch_profile'
+      responses:
+        '204':
+          description: successful operation
+      summary: STAGE=UNK Update profile information.
+      tags:
+        - profiles
+    post:
+      consumes: []
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/create_profile'
+      responses:
+        '201':
+          $ref: '#/responses/object_created'
+      summary: STAGE=UNK Create a new profile.
+      tags:
+        - profiles
+    x-restlet:
+      section: PROFILES
+  /profiles/documents:
+    delete:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+      responses:
+        '204':
+          description: success operation
+      summary: STAGE=UNK Delete the document.
+      tags:
+        - profiles
+    get:
+      description: Retrieve documents
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+      responses:
+        '200':
+          description: success
+      summary: STAGE=UNK Retrieve documents
+      tags:
+        - profiles
+    patch:
+      consumes: []
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/rename_document'
+      responses:
+        '204':
+          description: success
+      summary: STAGE=UNK Rename a document.
+      tags:
+        - profiles
+    post:
+      consumes: []
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/upload_document'
+      responses:
+        '201':
+          $ref: '#/responses/object_created'
+      summary: STAGE=UNK Upload a new document.
+      tags:
+        - profiles
+    x-restlet:
+      section: PROFILES
+  /profiles/mobile_carriers:
+    get:
+      description: Retrieve a list of supported carriers.
+      parameters:
+        - description: A way to just get back the info for just one carrier.
+          format: int32
+          in: query
+          name: carrier_id
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/mobile_carrier_response'
+      summary: 'STAGE=UNK Retrieve one or more mobile carriers. '
+      tags:
+        - profiles
+    x-restlet:
+      section: PROFILES
+  /profiles/optins:
+    delete:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+      responses:
+        '204':
+          description: successful operation
+      summary: STAGE=UNK Marks the profile as opted out.
+      tags:
+        - profiles
+    get:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/success_status_response'
+      summary: STAGE=UNK Check if the profile has opted to being contacted by text.
+      tags:
+        - profiles
+    patch:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+      responses:
+        '204':
+          description: successful operation
+      summary: STAGE=UNK Marks the profile as opted in.
+      tags:
+        - profiles
+    post:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/post_optin_code_response'
+      summary: 'STAGE=UNK Create, and send an Optin Code.'
+      tags:
+        - profiles
+    x-restlet:
+      section: PROFILES
+  /validations/email_exists:
+    get:
+      parameters:
+        - $ref: '#/parameters/end-user-token'
+        - description: Enter an e-mail to see if it is available. Can be used as ?email=xxx or as a JSON request.
+          in: query
+          name: email
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/get_email_exists_response'
+      summary: STAGE=UNK Check if an e-mail exists.
+      tags:
+        - validations
+    x-restlet:
+      section: VALIDATIONS
+produces:
+  - application/json
+schemes:
+  - https
+security:
+  - api_key: []
+securityDefinitions:
+  api_key:
+    description: This token needs to be sent as a HTTP header argument in every request to our API.
+    in: header
+    name: api-token
+    type: apiKey
+swagger: '2.0'
+x-restlet:
+  sections:
+    ALERTS: {}
+    BILLINGS: {}
+    BOARDS: {}
+    CREDIT_REPORTS: {}
+    END_USER_AUTHENTICATIONS: {}
+    LOCATIONS: {}
+    POSTINGS: {}
+    PROFILES: {}
+    VALIDATIONS: {}

@@ -1,0 +1,3836 @@
+{
+  "basePath": "/v1",
+  "consumes": [
+    "application/json"
+  ],
+  "host": "api.directfreight.com",
+  "info": {
+    "contact": {},
+    "description": "In order to use the Direct Freight API please first contact us to get an API Token. This token needs to be sent as a HTTP header argument in every request to our API.\n\napi-token=\"SECRET KEY\"\n\nPlease keep your api-token a secret. If the token is compromised please contact us to get a new one.\n\nThis api token authenticates your application and gives it access to the API.\n\nThe API token should not be confused with the end-user-token. That token is given to you via the end_user_authentications endpoint when the user logs in. This token is needed in order to use certain features, and get certain sensitive information.\n\nBoth Tokens are stateless, and delivered via the HTTP headers.",
+    "title": "Direct Freight API",
+    "version": "1.0",
+    "x-logo": {
+      "url": "https://www.directfreight.com/home/images/logo-direct-freight.png"
+    }
+  },
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "https"
+  ],
+  "security": [
+    {
+      "api-token": []
+    }
+  ],
+  "securityDefinitions": {
+    "api-token": {
+      "in": "header",
+      "name": "api-token",
+      "type": "apiKey"
+    }
+  },
+  "swagger": "2.0",
+  "x-restlet": {
+    "sections": {
+      "ALERTS": {},
+      "BOARDS": {},
+      "END_USER_AUTHENTICATIONS": {},
+      "LOCATIONS": {},
+      "Mobile Update": {},
+      "Optins": {},
+      "POSTINGS": {},
+      "PROFILES": {},
+      "VALIDATIONS": {},
+      "common_definitions": {},
+      "not categorized yet": {}
+    }
+  },
+  "parameters": {
+    "end-user-token": {
+      "in": "header",
+      "name": "end-user-token",
+      "required": true,
+      "type": "string"
+    },
+    "end-user-token-optional": {
+      "in": "header",
+      "name": "end-user-token",
+      "required": false,
+      "type": "string"
+    },
+    "board_type": {
+      "description": "Valid types are \"loads\", and \"trucks\".",
+      "enum": [
+        "loads",
+        "trucks"
+      ],
+      "in": "path",
+      "name": "board_type",
+      "required": true,
+      "type": "string"
+    },
+    "posting_type": {
+      "description": "Valid types are \"loads\", \"trucks\", \"private_loads\", \"private_trucks\", \"test_loads\", and \"test_trucks\"",
+      "enum": [
+        "loads",
+        "trucks",
+        "private_loads",
+        "private_trucks",
+        "test_loads",
+        "test_trucks"
+      ],
+      "in": "path",
+      "name": "posting_type",
+      "required": true,
+      "type": "string"
+    }
+  },
+  "responses": {
+    "error_422": {
+      "description": "Unprocessable Entity. More information provided in the return object.",
+      "schema": {
+        "$ref": "#/definitions/error_object"
+      }
+    },
+    "object_created": {
+      "description": "Object created check the headers for a reference URL.",
+      "schema": {
+        "$ref": "#/definitions/create_status"
+      }
+    }
+  },
+  "paths": {
+    "/alerts/{board_type}": {
+      "delete": {
+        "parameters": [
+          {
+            "description": "Specify to just delete some alerts.",
+            "in": "query",
+            "items": {
+              "type": "string"
+            },
+            "name": "alert_id",
+            "required": true,
+            "type": "array"
+          },
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "successful operation"
+          }
+        },
+        "summary": "STAGE=UNK Delete an alert.",
+        "tags": [
+          "alerts"
+        ]
+      },
+      "get": {
+        "description": "Get a list of alerts. You can optionally limit the list by specifcying alerts by their alert_id.",
+        "parameters": [
+          {
+            "description": "only get a subset of alerts. As this is a get request this is specified as a query string parameter.",
+            "in": "query",
+            "items": {
+              "type": "integer"
+            },
+            "name": "alert_id",
+            "required": false,
+            "type": "array"
+          },
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "On success will return a list of alerts.",
+            "schema": {
+              "$ref": "#/definitions/alert_list"
+            }
+          }
+        },
+        "summary": "STAGE=UNK Retrieve alerts.",
+        "tags": [
+          "alerts"
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Valid types are \"loads\", and \"trucks\".",
+          "enum": [
+            "loads",
+            "trucks"
+          ],
+          "in": "path",
+          "name": "board_type",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "patch": {
+        "consumes": [],
+        "description": "Search objects are set at creation. You cannot modify them after the alert has been created.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/patch_alert_properties"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Returned on response."
+          }
+        },
+        "summary": "STAGE=UNK Update an alert.",
+        "tags": [
+          "alerts"
+        ]
+      },
+      "post": {
+        "consumes": [],
+        "description": "Any parameter that is defined here and is also defined on the boards GET, follows the same rules.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/alert"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/object_created"
+          }
+        },
+        "summary": "STAGE=UNK Create an alert.",
+        "tags": [
+          "alerts"
+        ]
+      },
+      "x-restlet": {
+        "section": "ALERTS"
+      }
+    },
+    "/boards/{board_type}": {
+      "parameters": [
+        {
+          "description": "Defines the type of board requested.",
+          "enum": [
+            "loads",
+            "trucks"
+          ],
+          "in": "path",
+          "name": "board_type",
+          "required": true,
+          "type": "string",
+          "x-example": "loads"
+        }
+      ],
+      "post": {
+        "consumes": [],
+        "description": "This is the primary search method for loads and trucks. Please specifify at least an origin or destination.  The origin or destination may be state only.",
+        "parameters": [
+          {
+            "default": "01234567890abc",
+            "in": "header",
+            "name": "end-user-token",
+            "required": false,
+            "type": "string",
+            "x-example": "01234567890abc"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/board_request"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a list matching your search.",
+            "schema": {
+              "$ref": "#/definitions/board_response"
+            }
+          },
+          "422": {
+            "$ref": "#/responses/error_422"
+          }
+        },
+        "summary": "Retrieve a board",
+        "tags": [
+          "boards"
+        ]
+      },
+      "x-restlet": {
+        "section": "BOARDS"
+      }
+    },
+    "/boards/{board_type}/state_totals": {
+      "get": {
+        "description": "A convenience method to get totals by state.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/get_state_list_response"
+            }
+          }
+        },
+        "summary": "Totals by state",
+        "tags": [
+          "boards"
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Valid types are \"loads\", and \"trucks\".",
+          "enum": [
+            "loads",
+            "trucks"
+          ],
+          "in": "path",
+          "name": "board_type",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "x-restlet": {
+        "section": "BOARDS"
+      }
+    },
+    "/boards/hidden_companies": {
+      "delete": {
+        "description": "Mark a company as not hidden.",
+        "parameters": [
+          {
+            "description": "The company that need to be marked as not hidden.",
+            "in": "query",
+            "name": "company_name",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "summary": "STAGE=UNK Unhide companies",
+        "tags": [
+          "boards"
+        ]
+      },
+      "get": {
+        "description": "Get a list of companies that should be hidden.",
+        "parameters": [
+          {
+            "description": "A list of company names to check if any should be visually hidden.  If this field is blank all hidden companies will be returned.",
+            "in": "query",
+            "items": {
+              "type": "string"
+            },
+            "name": "company_name",
+            "required": false,
+            "type": "array"
+          },
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/get_hidden_companies_response"
+            }
+          }
+        },
+        "summary": "STAGE=UNK List hidden companies.",
+        "tags": [
+          "boards"
+        ]
+      },
+      "patch": {
+        "consumes": [],
+        "description": "Toggle one  company between hidden and unhidden.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/toggle_hidden_companies"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "successful operation"
+          }
+        },
+        "summary": "STAGE=UNK Change hidden status",
+        "tags": [
+          "boards"
+        ]
+      },
+      "post": {
+        "consumes": [],
+        "description": "Mark a set of companies as hidden.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/mark_hidden_companies"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/object_created"
+          }
+        },
+        "summary": "STAGE=UNK Hide companies.",
+        "tags": [
+          "boards"
+        ]
+      },
+      "x-restlet": {
+        "section": "BOARDS"
+      }
+    },
+    "/boards/hidden_entries": {
+      "delete": {
+        "description": " Mark an entry as unhidden.",
+        "parameters": [
+          {
+            "in": "query",
+            "items": {
+              "type": "string"
+            },
+            "name": "entry_id",
+            "required": true,
+            "type": "array"
+          },
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "STAGE=private Unhide 1 or more postings",
+        "tags": [
+          "boards"
+        ]
+      },
+      "get": {
+        "description": "Get a list of entries that should be hidden.",
+        "parameters": [
+          {
+            "description": "A list of id's to check if any should be visually hidden.",
+            "in": "query",
+            "items": {
+              "type": "string"
+            },
+            "name": "entry_id",
+            "required": true,
+            "type": "array"
+          },
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/get_hidden_entries"
+            }
+          }
+        },
+        "summary": "STAGE=UNK List hidden entries.",
+        "tags": [
+          "boards"
+        ]
+      },
+      "patch": {
+        "consumes": [],
+        "description": "Toggle one or more entries between hidden and unhidden.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/toggle_hidden_entries"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "successful operation"
+          }
+        },
+        "summary": "STAGE=UNK Change hidden status",
+        "tags": [
+          "boards"
+        ]
+      },
+      "post": {
+        "consumes": [],
+        "description": "Mark an entry as hidden.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/hidden_entry_object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/object_created"
+          }
+        },
+        "summary": "STAGE=private Hide 1 or more postings",
+        "tags": [
+          "boards"
+        ]
+      },
+      "x-restlet": {
+        "section": "BOARDS"
+      }
+    },
+    "/boards/notes": {
+      "delete": {
+        "parameters": [
+          {
+            "description": "The entry to associate the note with. ",
+            "in": "query",
+            "name": "note_id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "successful operation"
+          }
+        },
+        "summary": "STAGE=UNK Delete a note.",
+        "tags": [
+          "boards"
+        ]
+      },
+      "get": {
+        "description": "Get notes that this user has written.",
+        "parameters": [
+          {
+            "description": "Optionally just check if certain loads have notes associated with them. ",
+            "in": "query",
+            "items": {
+              "type": "string"
+            },
+            "name": "entry_id",
+            "required": false,
+            "type": "array"
+          },
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/get_boards_notes_response"
+            }
+          }
+        },
+        "summary": "STAGE=UNK List user notes.",
+        "tags": [
+          "boards"
+        ]
+      },
+      "patch": {
+        "consumes": [],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/update_notes"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/update_notes_status"
+            }
+          }
+        },
+        "summary": "STAGE=UNK Update a note.",
+        "tags": [
+          "boards"
+        ]
+      },
+      "post": {
+        "consumes": [],
+        "description": "Create a new note.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/create_notes"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Object created check the headers for a reference URL.",
+            "schema": {
+              "$ref": "#/definitions/note_create_status"
+            }
+          }
+        },
+        "summary": "STAGE=UNK Create a note.",
+        "tags": [
+          "boards"
+        ]
+      },
+      "x-restlet": {
+        "section": "BOARDS"
+      }
+    },
+    "/end_user_authentication/users": {
+      "post": {
+        "consumes": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "schema": {
+              "properties": {
+                "end-user-token": {
+                  "description": "Auto logs in the new user and gives them a token.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "end-user-token"
+              ],
+              "type": "object"
+            }
+          },
+          "422": {
+            "$ref": "#/responses/error_422"
+          }
+        },
+        "summary": "STAGE=UNK Create a new user.",
+        "tags": [
+          "end_user_authentications"
+        ]
+      },
+      "x-restlet": {
+        "section": "END_USER_AUTHENTICATIONS"
+      }
+    },
+    "/end_user_authentications": {
+      "delete": {
+        "description": "This logs a user out. the end-user-token will no longer be valid.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Will not return content on a successful logout."
+          }
+        },
+        "summary": "Logout",
+        "tags": [
+          "end_user_authentications"
+        ]
+      },
+      "get": {
+        "description": "Get current authentication level for the user.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "examples": {
+              "application/json": "{status: \"Subscribed\"}"
+            },
+            "schema": {
+              "properties": {
+                "status": {
+                  "description": "Will return the logged in user's status.",
+                  "enum": [
+                    "subscribed",
+                    "posting",
+                    "overdue",
+                    "not_logged_in"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "Get authentication level.",
+        "tags": [
+          "end_user_authentications"
+        ]
+      },
+      "post": {
+        "consumes": [],
+        "description": "This function sends login credentials, and retrieves a stateless token.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/login_credentials"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/end-user-token"
+            }
+          },
+          "422": {
+            "$ref": "#/responses/error_422"
+          }
+        },
+        "summary": "Login",
+        "tags": [
+          "end_user_authentications"
+        ]
+      },
+      "x-restlet": {
+        "section": "END_USER_AUTHENTICATIONS"
+      }
+    },
+    "/end_user_authentications/dates": {
+      "get": {
+        "description": "Gets an authoritative date_time string.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "examples": {
+              "application/json": "{\n  \"now\": \"now\"\n}"
+            },
+            "schema": {
+              "properties": {
+                "now": {
+                  "description": "The current date and time based on our server.",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "Retrieve date",
+        "tags": [
+          "end_user_authentications"
+        ]
+      },
+      "x-restlet": {
+        "section": "END_USER_AUTHENTICATIONS"
+      }
+    },
+    "/end_user_authentications/passwords": {
+      "get": {
+        "description": "Request a forgotten password.",
+        "parameters": [
+          {
+            "description": "The user e-mail to send a password to if valid.",
+            "in": "query",
+            "name": "email",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "This will return a success even if the e-mail is not in our records."
+          },
+          "422": {
+            "$ref": "#/responses/error_422"
+          }
+        },
+        "summary": "STAGE=UNK Retrieve password",
+        "tags": [
+          "end_user_authentications"
+        ]
+      },
+      "patch": {
+        "consumes": [],
+        "description": "Update a users password.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "new_password": {
+                  "description": "The user's new password.",
+                  "type": "string"
+                },
+                "old_password": {
+                  "description": "Thee user's old password.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "new_password",
+                "old_password"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "A successful operation."
+          },
+          "422": {
+            "$ref": "#/responses/error_422"
+          }
+        },
+        "summary": "STAGE=UNK Update password.",
+        "tags": [
+          "end_user_authentications"
+        ]
+      },
+      "x-restlet": {
+        "section": "END_USER_AUTHENTICATIONS"
+      }
+    },
+    "/locations/autocomplete": {
+      "get": {
+        "description": "A string of a partial city or state name, and returns a list of possible matches.",
+        "parameters": [
+          {
+            "description": "City or State or Postal code to search for.   It matches city name and state name and state abbreviation.  So for instance \"MO\" would return Missouri, Montana, and Montreal, QC  while  ME would return Maine, Mexico, and Memphis, TN",
+            "in": "query",
+            "name": "searchtext",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "restricts the results return.  regions will only return states, provinces, and countries.  cities will only return cities and postals.  The default is to return both cities and regions in the results.",
+            "enum": [
+              "cities",
+              "regions"
+            ],
+            "in": "query",
+            "name": "return_only",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "default": 100,
+            "description": "The number of records to return.   Limit 1 has a special property where it will only return a high confidence match so it may return zero results if no match found.",
+            "in": "query",
+            "maximum": 100,
+            "minimum": 1,
+            "name": "limit",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/autocomplete_response"
+            }
+          }
+        },
+        "summary": "autocomplete",
+        "tags": [
+          "locations"
+        ]
+      },
+      "x-restlet": {
+        "section": "LOCATIONS"
+      }
+    },
+    "/locations/reverse_geocode": {
+      "get": {
+        "description": "returns the nearest city to a lat/lon point. (reverse geocode)",
+        "parameters": [
+          {
+            "format": "float",
+            "in": "query",
+            "name": "latitude",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "format": "float",
+            "in": "query",
+            "name": "longitude",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/reverse_geocode_response"
+            }
+          }
+        },
+        "summary": "reverse_geocode",
+        "tags": [
+          "locations"
+        ]
+      },
+      "x-restlet": {
+        "section": "LOCATIONS"
+      }
+    },
+    "/mobile_updates": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "email_address",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status 200",
+            "schema": {
+              "properties": {
+                "bullet_points": {
+                  "items": {
+                    "default": "[]",
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "information_url": {
+                  "default": "null",
+                  "type": "string"
+                },
+                "message": {
+                  "default": "null",
+                  "type": "string"
+                },
+                "title": {
+                  "default": "null",
+                  "type": "string"
+                },
+                "update_url": {
+                  "default": "null",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "bullet_points",
+                "information_url",
+                "message",
+                "title",
+                "update_url"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "summary": "Get any available update information.",
+        "tags": [
+          "mobile update"
+        ]
+      },
+      "x-restlet": {
+        "section": "Mobile Update"
+      }
+    },
+    "/optins": {
+      "delete": {
+        "description": "By only sending in their EUA token you would be requesting to opt them out of everything.",
+        "parameters": [
+          {
+            "enum": [
+              "email",
+              "text",
+              "push"
+            ],
+            "in": "query",
+            "name": "notification_medium",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "default": "all",
+            "description": "This would allow granular optouts. Currently ignored.",
+            "enum": [
+              "all",
+              "alerts"
+            ],
+            "in": "query",
+            "name": "notification_channel",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Status 204"
+          }
+        },
+        "summary": "STAGE=UNK Opt someone out of one or more mediums and channels."
+      },
+      "get": {
+        "parameters": [
+          {
+            "description": "To limit your list to just one medium.",
+            "enum": [
+              "email",
+              "text",
+              "push"
+            ],
+            "in": "query",
+            "name": "notification_medium",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status 200",
+            "schema": {
+              "properties": {
+                "list": {
+                  "items": {
+                    "properties": {
+                      "notification_channel": {
+                        "default": "all",
+                        "type": "string"
+                      },
+                      "notification_medium": {
+                        "enum": [
+                          "email",
+                          "text",
+                          "push"
+                        ],
+                        "type": "string"
+                      },
+                      "status": {
+                        "enum": [
+                          "optin",
+                          "optout",
+                          "no response",
+                          "no record"
+                        ],
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "notification_channel",
+                      "notification_medium",
+                      "status"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "list"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "summary": "STAGE=UNK Get the optin status of a user."
+      },
+      "patch": {
+        "consumes": [],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "notification_medium": {
+                  "enum": [
+                    "email",
+                    "text"
+                  ],
+                  "type": "string"
+                },
+                "verification_code": {
+                  "description": "This code is generated on a POST, and will arrive via the same medium it was designated for.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "notification_medium",
+                "verification_code"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Status 204"
+          }
+        },
+        "summary": "STAGE=UNK Confirm an optin."
+      },
+      "post": {
+        "consumes": [],
+        "description": "Currently only Push notifications are implemneted. With them a post creates and approves the optin. Later on when text/email is ported post will create the optin with the status of 'no response' meaning they haven't replied with the propper code, or clicked an authorization link.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "notification_channel": {
+                  "default": "all",
+                  "description": "Currently defaults to all, and is ignored. When we start using it it will be for opting people out or in one list like alerts, or messages, but not others.",
+                  "type": "string"
+                },
+                "notification_medium": {
+                  "description": "We currently only accept push",
+                  "enum": [
+                    "email",
+                    "text",
+                    "push"
+                  ],
+                  "type": "string"
+                },
+                "tokens": {
+                  "description": "This is how you can add multiple push notifications at once, or for systems that have multiple tokens required.",
+                  "example": "\"tokens\": { \"ios\": \"12345678\", \"android\": \"5432344\" } ",
+                  "properties": {
+                    "$SERVICE_OR_KEY_NAME": {
+                      "description": "Fill in the key in the value, and the service in the name. Look at our examples for clarification.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "$SERVICE_OR_KEY_NAME"
+                  ],
+                  "type": "object"
+                }
+              },
+              "required": [
+                "notification_medium"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Status 201"
+          }
+        },
+        "summary": "STAGE=UNK Submit a request to be opted in.",
+        "tags": [
+          "optins"
+        ]
+      },
+      "x-restlet": {
+        "section": "Optins"
+      }
+    },
+    "/postings/{posting_type}": {
+      "delete": {
+        "description": "Will delete one or more entries. Unless the delete_all parameter is set, only 100 entries can be removed per request.",
+        "parameters": [
+          {
+            "description": "This parameter will be ignored if delete_all is specified, otherwise posting_id or custom_id must be specified. The 100 maximum is split between posting_id & custom_id.",
+            "in": "query",
+            "name": "posting_id",
+            "required": false,
+            "type": "integer",
+            "x-example": "?posting_id=22&posting_id=23&posting_id=24"
+          },
+          {
+            "description": "You must specify which entry to remove. Will be ignored if delete_all is specified, otherwise it or posting_id must be specified. The 100 maximum is split between posting_id & custom_id.",
+            "in": "query",
+            "name": "custom_id",
+            "required": false,
+            "type": "string",
+            "x-example": "?custom_id=cats&custom_id=dogs&custom_id=parrots"
+          },
+          {
+            "description": "If included and true, will delete all loads for the logged in user.",
+            "in": "query",
+            "name": "delete_all",
+            "required": false,
+            "type": "boolean",
+            "x-example": "?delete_all=true"
+          },
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "success operation"
+          }
+        },
+        "summary": "Remove multiple postings",
+        "tags": [
+          "postings"
+        ]
+      },
+      "get": {
+        "description": "Retrieves a list of the users posted loads or trucks. By default it retrieves all of their entries. If you specifiy multiple ids, only 100 entries can be retrieved per request.",
+        "parameters": [
+          {
+            "description": "To retrieve only a subset of entries.",
+            "in": "query",
+            "name": "posting_id",
+            "required": false,
+            "type": "integer",
+            "x-example": "?posting_id=32&posting_id=33&posting_id=34"
+          },
+          {
+            "description": "To retrieve only a subset of entries.",
+            "in": "query",
+            "name": "custom_id",
+            "required": false,
+            "type": "string",
+            "x-example": "?custom_id=cats&custom_id=dogs&custom_id=parrots"
+          },
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/posting_post_response"
+            }
+          }
+        },
+        "summary": "Retrieve multiple postings",
+        "tags": [
+          "postings"
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Valid types are \"loads\", \"trucks\", \"private_loads\", \"private_trucks\", \"test_loads\", and \"test_trucks\"",
+          "enum": [
+            "test_loads",
+            "test_trucks",
+            "private_loads",
+            "private_trucks",
+            "loads",
+            "trucks"
+          ],
+          "in": "path",
+          "name": "posting_type",
+          "required": true,
+          "type": "string",
+          "x-example": "test_loads"
+        }
+      ],
+      "patch": {
+        "consumes": [],
+        "description": "Update one or more entries. Only 100 entries can be updated per request.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/postings_patch_object"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Status 202",
+            "schema": {
+              "properties": {
+                "list": {
+                  "$ref": "#/definitions/postings-post_or_patch_response"
+                }
+              },
+              "required": [
+                "list"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "summary": "Update multiple postings",
+        "tags": [
+          "postings"
+        ]
+      },
+      "post": {
+        "consumes": [],
+        "description": "This endpoint method will post one or more entries. Valid posting_type are: loads, trucks, test_loads, test_trucks, private_loads, and private_trucks.\n\nOnly 100 entries can be created per request.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "list": {
+                  "items": {
+                    "$ref": "#/definitions/postings_entry_object"
+                  },
+                  "maxItems": 100,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "list"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Loads accepted. Check the response for an ordered list of response.",
+            "schema": {
+              "$ref": "#/definitions/postings-post_or_patch_response"
+            }
+          }
+        },
+        "summary": "Create multiple postings",
+        "tags": [
+          "postings"
+        ]
+      },
+      "x-restlet": {
+        "section": "POSTINGS"
+      }
+    },
+    "/postings/{posting_type}/{action}": {
+      "parameters": [
+        {
+          "description": "Valid types are \"loads\", \"trucks\", \"private_loads\", \"private_trucks\", \"test_loads\", and \"test_trucks\"",
+          "enum": [
+            "loads",
+            "trucks",
+            "private_loads",
+            "private_trucks",
+            "test_loads",
+            "test_trucks"
+          ],
+          "in": "path",
+          "name": "posting_type",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "description": "Specified in the url. Valid types are \"copy\", and \"move\"",
+          "enum": [
+            "copy",
+            "move"
+          ],
+          "in": "path",
+          "name": "action",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "post": {
+        "consumes": [],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/post_posting_type_action_body"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/object_created"
+          }
+        },
+        "summary": "STAGE=UNK Copy or Move an posting.",
+        "tags": [
+          "postings"
+        ]
+      },
+      "x-restlet": {
+        "section": "POSTINGS"
+      }
+    },
+    "/postings/custom_categories/{category_type}": {
+      "delete": {
+        "parameters": [
+          {
+            "description": "To just delete information about some postings.",
+            "in": "query",
+            "items": {
+              "type": "string"
+            },
+            "name": "category_id",
+            "required": false,
+            "type": "array"
+          },
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "200 OK"
+          }
+        },
+        "summary": "STAGE=UNK Delete some or all custom columns, or custom_column data.",
+        "tags": [
+          "postings"
+        ]
+      },
+      "get": {
+        "parameters": [
+          {
+            "description": "To just return information about some postings.",
+            "in": "query",
+            "items": {
+              "type": "string"
+            },
+            "name": "category_id",
+            "required": false,
+            "type": "array"
+          },
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/get_custom_categories_response"
+            }
+          }
+        },
+        "summary": "STAGE=UNK Get a list of custom columns, or custom_column data.",
+        "tags": [
+          "postings"
+        ]
+      },
+      "parameters": [
+        {
+          "description": "Valid types are \"names\", and \"data\".",
+          "enum": [
+            "names",
+            "data"
+          ],
+          "in": "path",
+          "name": "category_type",
+          "required": true,
+          "type": "string",
+          "x-example": "names"
+        }
+      ],
+      "patch": {
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "successful operation"
+          }
+        },
+        "summary": "STAGE=UNK Update a category name, or value.",
+        "tags": [
+          "postings"
+        ]
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/object_created"
+          }
+        },
+        "summary": "STAGE=UNK Create new category names, or add new data.",
+        "tags": [
+          "postings"
+        ]
+      },
+      "x-restlet": {
+        "section": "POSTINGS"
+      }
+    },
+    "/profiles": {
+      "get": {
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/profile_object"
+            }
+          }
+        },
+        "summary": "STAGE=UNK Request the logged in user's profile.",
+        "tags": [
+          "profiles"
+        ]
+      },
+      "patch": {
+        "consumes": [],
+        "description": "Please send in at least one field to be updated.",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/profile_object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/profile_object"
+            }
+          }
+        },
+        "summary": "STAGE=UNK Update profile information.",
+        "tags": [
+          "profiles"
+        ]
+      },
+      "post": {
+        "consumes": [],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/profile_object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Object created",
+            "headers": {
+              "Location": {
+                "description": "This will have a fully qualified API url you can call to get details of your profile.",
+                "type": "string",
+                "x-example": "https://api.directfreight.com/v1/profiles/"
+              }
+            }
+          }
+        },
+        "summary": "STAGE=UNK Create a new profile.",
+        "tags": [
+          "profiles"
+        ]
+      },
+      "x-restlet": {
+        "section": "PROFILES"
+      }
+    },
+    "/profiles/documents": {
+      "delete": {
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "success operation"
+          }
+        },
+        "summary": "STAGE=UNK Delete the document.",
+        "tags": [
+          "profiles"
+        ]
+      },
+      "get": {
+        "description": "Retrieve documents",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        },
+        "summary": "STAGE=UNK Retrieve documents",
+        "tags": [
+          "profiles"
+        ]
+      },
+      "patch": {
+        "consumes": [],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/rename_document"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "success"
+          }
+        },
+        "summary": "STAGE=UNK Rename a document.",
+        "tags": [
+          "profiles"
+        ]
+      },
+      "post": {
+        "consumes": [],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/upload_document"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/object_created"
+          }
+        },
+        "summary": "STAGE=UNK Upload a new document.",
+        "tags": [
+          "profiles"
+        ]
+      },
+      "x-restlet": {
+        "section": "PROFILES"
+      }
+    },
+    "/validations/email_exists": {
+      "get": {
+        "description": "Enter an e-mail to see if it is available. Can be used as ?email=xxx or as a JSON request.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "email",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/get_email_exists_response"
+            }
+          }
+        },
+        "summary": "STAGE=UNK Check if an e-mail exists.",
+        "tags": [
+          "validations"
+        ]
+      },
+      "x-restlet": {
+        "section": "VALIDATIONS"
+      }
+    },
+    "/validations/trailers": {
+      "delete": {
+        "description": "This will remove a customer_type from the list. This is only useable via a special api-token",
+        "parameters": [
+          {
+            "description": "This will remove this type from the list.",
+            "in": "query",
+            "name": "customer_type",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "If you wish to remove a customer_type associated with a username you would add this parameter.",
+            "in": "query",
+            "name": "username",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Status 204"
+          }
+        },
+        "summary": "STAGE=UNK Remove a lookup.",
+        "tags": [
+          "validations"
+        ]
+      },
+      "get": {
+        "parameters": [
+          {
+            "description": "The custom type that the poster is trying to submit.",
+            "in": "query",
+            "name": "customer_type",
+            "required": true,
+            "type": "string",
+            "x-example": "DX"
+          },
+          {
+            "description": "We assume only posters will be using this endpoint. We will use their end-user-token to match for a customer specific match first, and fall back to a general one if it doesn't exist.",
+            "in": "header",
+            "name": "end-user-token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status 200",
+            "schema": {
+              "properties": {
+                "trailer_type": {
+                  "$ref": "#/definitions/trailer_type"
+                }
+              },
+              "required": [
+                "trailer_type"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "summary": "STAGE=UNK Find an official type to match to the customer submitted one.",
+        "tags": [
+          "validations"
+        ]
+      },
+      "patch": {
+        "consumes": [],
+        "description": "Will update the match of the trailer_type to the customer type. This is only useable via a special api-token",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "customer_type": {
+                  "description": "This is the key. It is not modified.",
+                  "type": "string"
+                },
+                "notes": {
+                  "description": "You can clear or replace the notes.",
+                  "type": "string"
+                },
+                "trailer_type": {
+                  "$ref": "#/definitions/trailer_type"
+                },
+                "username": {
+                  "description": "This is an optional key, and is also not modifiable. If customer_type is associated with a username you must also include the username.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "customer_type",
+                "trailer_type"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Status 202"
+          }
+        },
+        "summary": "STAGE=UNK Update which DF trailer_types match the customer_type",
+        "tags": [
+          "validations"
+        ]
+      },
+      "post": {
+        "consumes": [],
+        "description": "This is only useable via a special api-token",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "customer_type": {
+                  "description": "This is the new type we are adding to our lookup table.",
+                  "type": "string"
+                },
+                "notes": {
+                  "description": "Provides context. For internal use.",
+                  "type": "string"
+                },
+                "trailer_type": {
+                  "$ref": "#/definitions/trailer_type"
+                },
+                "username": {
+                  "description": "This is to specify to create this definition for only this specific user. You might do this if this customer_type already exists and uses a different list of trailer types than this customer requires.\n\nThis style uses the old system. It is open in that anyone with the special api-token can update any user. Optionally, if we chose to lock it down to end-user-token we loose that ability, could drop this field and let them just send in an EUA token.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "customer_type",
+                "trailer_type"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Status 201"
+          }
+        },
+        "summary": "STAGE=UNK Add a custom trailer type match.",
+        "tags": [
+          "validations"
+        ]
+      },
+      "x-restlet": {
+        "section": "VALIDATIONS"
+      }
+    }
+  },
+  "definitions": {
+    "alert_list": {
+      "description": "A hash containing a list of objects. Each entry should have 1 alert object, and 1 search object, and 2 integer counts. One for the number of new loads, and one for the number of total loads that match the search critera.",
+      "example": "{\n  \"data\": [\n    \"{}\",\n    \"{}\"\n  ]\n}",
+      "properties": {
+        "data": {
+          "items": {
+            "$ref": "#/definitions/alert"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object",
+      "x-restlet": {
+        "section": "ALERTS"
+      }
+    },
+    "alert": {
+      "properties": {
+        "days_of_week": {
+          "description": "Limit the days that alerts are sent to the days listed.",
+          "items": {
+            "enum": [
+              "Sun",
+              "Mon",
+              "Tue",
+              "Wed",
+              "Thu",
+              "Fri",
+              "Sat"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "email_address": {
+          "description": "The address for the alert.",
+          "type": "string"
+        },
+        "end_hour": {
+          "description": "A  corresponding to the hour of the day.",
+          "maximum": 21,
+          "minimum": 3,
+          "type": "integer"
+        },
+        "expires_after": {
+          "description": "The last day the alert will be valid. Valid time frames are from today until one year into the future.",
+          "example": "2019-12-30",
+          "format": "date",
+          "type": "string"
+        },
+        "list_order": {
+          "description": "Any value that is valid in the boards sort_order is also valid here.",
+          "type": "string"
+        },
+        "list_type": {
+          "description": "This specify the type of list that is returned, including disabling the list from being sent at all. Valid values are 'complete-list','only-new', and 'not-active'.",
+          "enum": [
+            "complete-list",
+            "only-new",
+            "not-active"
+          ],
+          "type": "string"
+        },
+        "minute_frequency": {
+          "description": "How many minutes to wait before sending another alert. Valid values are '15','30','60','120','240','480', and '1440'.",
+          "type": "integer"
+        },
+        "search": {
+          "description": "Refer to the boards documentation for the full list of restrictions for each field.",
+          "properties": {
+            "delivery_date": {
+              "format": "date",
+              "type": "string"
+            },
+            "destination_city": {
+              "type": "string"
+            },
+            "destination_radius": {
+              "type": "integer"
+            },
+            "destination_state": {
+              "type": "string"
+            },
+            "full_load": {
+              "type": "boolean"
+            },
+            "origin_city": {
+              "type": "string"
+            },
+            "origin_radius": {
+              "type": "integer"
+            },
+            "origin_state": {
+              "type": "string"
+            },
+            "ship_date": {
+              "items": {
+                "format": "date",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "trailer_type": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "send_type": {
+          "description": "What method to send the alert list.",
+          "enum": [
+            "email",
+            "text"
+          ],
+          "type": "string"
+        },
+        "start_hour": {
+          "description": "A  corresponding to the hour of the day.",
+          "maximum": 21,
+          "minimum": 3,
+          "type": "integer"
+        },
+        "time_zone": {
+          "description": "A number between -1 and 2. -1 = EST, 0 = CST, 1 = MST, 2 = PST",
+          "maximum": 2,
+          "minimum": -1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "days_of_week",
+        "email_address",
+        "end_hour",
+        "expires_after",
+        "list_order",
+        "list_type",
+        "minute_frequency",
+        "search",
+        "send_type",
+        "start_hour",
+        "time_zone"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "ALERTS"
+      }
+    },
+    "autocomplete_response": {
+      "example": "{\n  \"city\": \"city\",\n  \"state_abbreviation\": \"{}\",\n  \"state_name\": \"{}\"\n}",
+      "properties": {
+        "city": {
+          "description": "The name of the city.  Only returned if record_type is city or postal",
+          "type": "string"
+        },
+        "postal_code": {
+          "description": "The postal code of the city.  Only returned if match type is postal.",
+          "type": "string"
+        },
+        "record_type": {
+          "enum": [
+            "country",
+            "state",
+            "province",
+            "city",
+            "postal"
+          ],
+          "type": "string"
+        },
+        "region_code": {
+          "type": "string"
+        },
+        "region_name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "record_type",
+        "region_code",
+        "region_name"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "LOCATIONS"
+      }
+    },
+    "board_request": {
+      "properties": {
+        "alert_id": {
+          "description": "By specifying an alert_id we will record the loads or trucks seen by this user, and associate it with their alert.   See /alerts documentation for more information on setting up alerts.",
+          "example": 5555,
+          "type": "integer"
+        },
+        "company_name": {
+          "description": "Search only for loads posted by this company.",
+          "type": "string"
+        },
+        "destination_city": {
+          "description": "If used, this field must be accompanied by a destination_state.",
+          "example": "chicago",
+          "minLength": 2,
+          "type": "string"
+        },
+        "destination_radius": {
+          "description": "If both the destination city and state are specified, this field will limit the search to results to within # miles of the specified destination city.   If this field is omitted during a search that includes a destination city a default value of 30 miles will be used.",
+          "example": 100,
+          "maximum": 300,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "destination_state": {
+          "description": "If the destination_city field is is used, this field should contain the state for that city.  For searches without a specified destination_city this field may contain an array list of state abbreviations.",
+          "example": [
+            "IL",
+            "HI",
+            "NY",
+            "KS",
+            "TX",
+            "MO",
+            "AL"
+          ],
+          "items": {
+            "maxLength": 2,
+            "minLength": 2,
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "full_load": {
+          "description": "This is only valid when requesting a loads board. Omitting this field will return both full and partial loads. A true value will limit results to full loads loads only.  False will return partial loads only.",
+          "example": true,
+          "type": "boolean"
+        },
+        "item_count": {
+          "description": "This argument adjusts how many items per page will be returned.  Omitting this field will return the default of 50 items per page",
+          "example": 25,
+          "maximum": 100,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "origin_city": {
+          "description": "If used, this field must be accompanied by an origin_state.",
+          "example": "Kansas City",
+          "minLength": 2,
+          "type": "string"
+        },
+        "origin_radius": {
+          "description": "If both the origin city and state are specified, this field will limit the search to results to within # miles of the specified origin city. If this field is omitted during a search that includes an origin city a default value of 25 miles will be used.",
+          "example": 150,
+          "maximum": 300,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "origin_state": {
+          "description": "If the origin_city field is is used, this field should contain the state for that city. For searches without a specified origin_city this field may contain an array list of state abbreviations.",
+          "example": [
+            "MO",
+            "IL",
+            "TX",
+            "CA"
+          ],
+          "items": {
+            "maxLength": 2,
+            "minLength": 2,
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "page_number": {
+          "description": "The page you want to return. Will return an empty board on an invalid page.",
+          "minimum": 1,
+          "type": "integer"
+        },
+        "return_count": {
+          "description": "If included this will return a total count instead of a list. ",
+          "type": "boolean"
+        },
+        "return_only_new": {
+          "description": "A true value will only return results that have not been viewed by the user. This field requires a valid alert_id to be specified in order to return unviewed items.  See /alerts for more information on setting up and using alerts.",
+          "type": "boolean"
+        },
+        "ship_date": {
+          "description": "Limits results to specified ship date(s).",
+          "items": {
+            "description": "Please use the YYYY-MM-DD format.",
+            "format": "date",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "sort_parameter": {
+          "default": "age",
+          "description": "The system automatically chooses the most common order based on the parameter chosen.  Sort order can be specified by adding -asc or -desc to the end.",
+          "enum": [
+            "origin_city",
+            "origin_state",
+            "destination_city",
+            "destination_state",
+            "trailer_type",
+            "load_size",
+            "pay_rate",
+            "credit_score",
+            "age",
+            "trip_miles",
+            "dead_head",
+            "length",
+            "weight",
+            "company_name",
+            "ship_date",
+            "receive_date",
+            "tia_user",
+            "green_light"
+          ],
+          "example": "age",
+          "type": "string"
+        },
+        "trailer_type": {
+          "description": "A string array of valid trailer types to limit the search. ",
+          "example": [
+            "F",
+            "F+T",
+            "F+S",
+            "V"
+          ],
+          "items": {
+            "enum": [
+              "V",
+              "VINT",
+              "SD",
+              "MX",
+              "HS",
+              "AC",
+              "LB",
+              "F+T",
+              "F",
+              "FINT",
+              "DD",
+              "V+V",
+              "V+A",
+              "CRG",
+              "HB",
+              "LA",
+              "PO",
+              "R",
+              "RINT",
+              "RGN",
+              "CV",
+              "DT",
+              "TNK",
+              "F+S",
+              "PNEU",
+              "CONT",
+              "OTHER"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object",
+      "x-restlet": {
+        "section": "BOARDS"
+      }
+    },
+    "board_response_item": {
+      "example": "test",
+      "properties": {
+        "age": {
+          "description": "Time in minutes since load/truck was first posted. NULL is returned for values less than 1 minute.",
+          "example": 15,
+          "type": "integer"
+        },
+        "comment": {
+          "description": "This field is only returned for an end_user_token that has the subscribed access level.",
+          "example": "Test Load",
+          "type": "string"
+        },
+        "company_name": {
+          "description": "This field is only returned for an end_user_token that has the subscribed access level.",
+          "example": "ABC Company",
+          "type": "string"
+        },
+        "credit_report_key": {
+          "description": "This field is only returned for an end_user_token that has the subscribed access level.\n\nTo access the credit report associated with the company for this item, use the key returned with the following url. https://www.directfreight.com/home/credit_report?refid=$credit_report_key",
+          "type": "string"
+        },
+        "credit_score": {
+          "description": "The credit score for the company associated with this item.",
+          "example": 99,
+          "type": "integer"
+        },
+        "dead_head": {
+          "description": "Distance between request body origin_city, and response item origin_city. This field will be null if no origin_city is specified in the request body or if distance cannot be calculated.",
+          "example": 87,
+          "type": "integer"
+        },
+        "destination_city": {
+          "description": "This field may be returned as null.",
+          "minLength": 2,
+          "type": "string"
+        },
+        "destination_state": {
+          "description": "This field may be returned as null.",
+          "example": "MO",
+          "type": "string"
+        },
+        "entry_id": {
+          "description": "unique identifier for this item.",
+          "example": "55555555",
+          "type": "string"
+        },
+        "full_load": {
+          "description": "Specifies whether load is full or partial.  Will always return true for trucks.",
+          "example": true,
+          "type": "boolean"
+        },
+        "green_light": {
+          "description": "Indicates whether broker/shipper for item is pre-approved for Rivera Finance factoring program.",
+          "example": true,
+          "type": "boolean"
+        },
+        "height": {
+          "description": "Height in inches.  Will be null if empty.",
+          "type": "integer"
+        },
+        "length": {
+          "description": "Length in feet.  Will be null if empty.",
+          "type": "number"
+        },
+        "origin_city": {
+          "description": "Origin city of item.",
+          "example": "Chicago",
+          "minLength": 2,
+          "type": "string"
+        },
+        "origin_state": {
+          "description": "Origin state of item",
+          "example": "IL",
+          "type": "string"
+        },
+        "pay_rate": {
+          "description": "Will be null if empty.",
+          "type": "number"
+        },
+        "phone_extension": {
+          "description": "This field is only returned for an end_user_token that has the subscribed access level.   Will return null if empty.",
+          "example": 123,
+          "type": "integer"
+        },
+        "phone_number": {
+          "description": "This field is only returned for an end_user_token that has the subscribed access level.",
+          "example": "555-555-5555",
+          "type": "integer"
+        },
+        "receive_date": {
+          "example": "2018-09-24",
+          "format": "date",
+          "type": "string"
+        },
+        "ship_date": {
+          "description": "Date item is scheduled to be loaded.",
+          "example": "2018-09-20",
+          "format": "date",
+          "type": "string"
+        },
+        "trade_orgs": {
+          "description": "Approved Trade Organizations",
+          "properties": {
+            "tia_approved": {
+              "description": "TIA Approved (yes/no)",
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "trailer_type": {
+          "description": "A string array of valid trailer types.",
+          "example": "V",
+          "type": "string"
+        },
+        "trip_miles": {
+          "description": "Distance between origin and destination.  This field will be null if distance cannot be calculated.",
+          "example": 523,
+          "type": "integer"
+        },
+        "user_hid": {
+          "description": "This field is only returned for an end_user_token that has the subscribed or posting access level. The value when true represents that the user wishes the entry hidden. Refer to boards/hidden_entries/ documentation for more information on how to set and update this value.",
+          "example": false,
+          "type": "boolean"
+        },
+        "weight": {
+          "description": "Weight in pounds.  Will be null if empty.",
+          "type": "integer"
+        },
+        "width": {
+          "description": "Width in inches.  Will be null if empty.",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "age",
+        "credit_score",
+        "dead_head",
+        "destination_city",
+        "destination_state",
+        "entry_id",
+        "full_load",
+        "green_light",
+        "height",
+        "length",
+        "origin_city",
+        "origin_state",
+        "pay_rate",
+        "receive_date",
+        "ship_date",
+        "trailer_type",
+        "trip_miles",
+        "weight",
+        "width"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "BOARDS"
+      }
+    },
+    "board_response": {
+      "example": "{\n  \"list\": \"{}\",\n  \"page_number\": \"{}\",\n  \"total_items\": \"{}\",\n  \"total_pages\": 0\n}",
+      "properties": {
+        "list": {
+          "description": "A list of entries for this board.",
+          "items": {
+            "$ref": "#/definitions/board_response_item"
+          },
+          "type": "array"
+        },
+        "page_number": {
+          "description": "The page you are on.",
+          "type": "integer"
+        },
+        "total_items": {
+          "description": "A count of all the entry objects for the specified search.",
+          "type": "integer"
+        },
+        "total_pages": {
+          "description": "A count of the # of pages based on the search parameters.",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "list"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "BOARDS"
+      }
+    },
+    "create_multiple_postings": {
+      "properties": {
+        "contact_name": {
+          "description": "The dispatchers name. By default we use the profile information. ",
+          "type": "string"
+        },
+        "contact_phone": {
+          "description": "By default we use the number listed in their profile. ",
+          "type": "string"
+        },
+        "delete_current_before_posting": {
+          "description": "An optional argument that will first delete all of the users loads before entering the fresh list. Caution, this will still delete everything even if some of the entries fail to be created. ",
+          "type": "boolean"
+        },
+        "list": {
+          "description": "Valid types are &quot;loads&quot;, &quot;trucks&quot;, &quot;private_loads&quot;, &quot;private_trucks&quot;, &quot;test_loads&quot;, and &quot;test_trucks&quot; ",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "list"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "POSTINGS"
+      }
+    },
+    "create_notes": {
+      "properties": {
+        "body": {
+          "type": "string"
+        },
+        "entry_id": {
+          "description": "The entry to associate the note with. ",
+          "type": "string"
+        },
+        "title": {
+          "description": "Subject of the note. ",
+          "type": "string"
+        }
+      },
+      "required": [
+        "body",
+        "entry_id",
+        "title"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "BOARDS"
+      }
+    },
+    "create_status": {
+      "properties": {
+        "success": {
+          "type": "integer"
+        }
+      },
+      "type": "object",
+      "x-restlet": {
+        "section": "common_definitions"
+      }
+    },
+    "end-user-token": {
+      "properties": {
+        "end-user-token": {
+          "description": "On success and end-user-token is returned.",
+          "example": "XX423ASOEUHT4AESUTH",
+          "type": "string"
+        }
+      },
+      "type": "object",
+      "x-restlet": {
+        "section": "END_USER_AUTHENTICATIONS"
+      }
+    },
+    "error_object": {
+      "example": "{\n  \"code\": 1,\n  \"error\": \"Generic Validation\",\n  \"description\": \"The e-mail address must be valid.\"\n}",
+      "properties": {
+        "code": {
+          "type": "integer"
+        },
+        "description": {
+          "type": "string"
+        },
+        "error": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "description",
+        "error"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "common_definitions"
+      }
+    },
+    "get_boards_notes_response": {
+      "properties": {
+        "list": {
+          "description": "A list of requested notes",
+          "items": {
+            "$ref": "#/definitions/notes_response_item"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "list"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "BOARDS"
+      }
+    },
+    "get_custom_categories_response": {
+      "example": "{\n  \"categories\": [\n    \"categories\",\n    \"categories\"\n  ]\n}",
+      "properties": {
+        "categories": {
+          "description": "A list of each category, type and it's corresponding position.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object",
+      "x-restlet": {
+        "section": "not categorized yet"
+      }
+    },
+    "get_email_exists_response": {
+      "example": "{\n  \"exists\": true\n}",
+      "properties": {
+        "exists": {
+          "description": "Returns a true value if it is associated with an account.",
+          "type": "boolean"
+        }
+      },
+      "type": "object",
+      "x-restlet": {
+        "section": "not categorized yet"
+      }
+    },
+    "get_hidden_companies_response": {
+      "example": "{\n  \"company_name\": [\n    \"company_name\",\n    \"company_name\"\n  ]\n}",
+      "properties": {
+        "company_name": {
+          "description": "A subset of companies that need to be marked as hidden.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object",
+      "x-restlet": {
+        "section": "not categorized yet"
+      }
+    },
+    "get_hidden_entries": {
+      "example": {
+        "entry_id": [
+          "entry_id",
+          "entry_id"
+        ]
+      },
+      "properties": {
+        "entry_id": {
+          "description": "A subset of entries that need to be marked as hidden.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object",
+      "x-restlet": {
+        "section": "not categorized yet"
+      }
+    },
+    "get_state_list_response": {
+      "example": "{\n  \"list\": \"{     \\\"MS\\\": 1449,     \\\"NS\\\": 24,     \\\"VT\\\": 145,     \\\"MD\\\": 520,     \\\"ID\\\": 2091,     \\\"SK\\\": 126,     \\\"WA\\\": 2207,     \\\"SC\\\": 1619,     \\\"VA\\\": 1781,     \\\"PQ\\\": 10,     \\\"ON\\\": 270,     \\\"KS\\\": 969,     \\\"NE\\\": 1386,     \\\"OR\\\": 2984,     \\\"WI\\\": 2714,     \\\"GA\\\": 3184,     \\\"IN\\\": 3363,     \\\"KY\\\": 1731,     \\\"NV\\\": 534,     \\\"NC\\\": 1824,     \\\"BC\\\": 124,     \\\"DC\\\": 7,     .... }\"\n}",
+      "properties": {
+        "list": {
+          "description": "A hash of state totals.",
+          "example": "{     \"MS\": 1449,     \"NS\": 24,     \"VT\": 145,     \"MD\": 520,     \"ID\": 2091,     \"SK\": 126,     \"WA\": 2207,     \"SC\": 1619,     \"VA\": 1781,     \"PQ\": 10,     \"ON\": 270,     \"KS\": 969,     \"NE\": 1386,     \"OR\": 2984,     \"WI\": 2714,     \"GA\": 3184,     \"IN\": 3363,     \"KY\": 1731,     \"NV\": 534,     \"NC\": 1824,     \"BC\": 124,     \"DC\": 7,     .... }",
+          "type": "object"
+        }
+      },
+      "type": "object",
+      "x-restlet": {
+        "section": "BOARDS"
+      }
+    },
+    "hidden_entry_object": {
+      "properties": {
+        "entry_id": {
+          "description": "The entry(s) that need to be marked as hidden.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "entry_id"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "BOARDS"
+      }
+    },
+    "login_credentials": {
+      "properties": {
+        "login": {
+          "description": "The e-mail, or username information needed to log in. ",
+          "type": "string"
+        },
+        "realm": {
+          "description": "This specifies who to log in with. If left blank we will assume email/password. Valid realms are username, email, facebook(not implemneted), google(not implemented), and linkedin(not implemented). ",
+          "enum": [
+            "username",
+            "email"
+          ],
+          "type": "string"
+        },
+        "secret": {
+          "description": "The password, or token required for this login. ",
+          "type": "string"
+        }
+      },
+      "required": [
+        "login",
+        "realm",
+        "secret"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "END_USER_AUTHENTICATIONS"
+      }
+    },
+    "mark_hidden_companies": {
+      "properties": {
+        "company_name": {
+          "description": "The company that need to be marked as hidden.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "company_name"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "not categorized yet"
+      }
+    },
+    "mobile_carrier_response": {
+      "example": {
+        "carrier_id": 0,
+        "carrier_name": "{}"
+      },
+      "properties": {
+        "carrier_id": {
+          "description": "The carrier ID.",
+          "format": "int32",
+          "type": "integer"
+        },
+        "carrier_name": {
+          "description": "Their mobile carrier.",
+          "type": "object"
+        }
+      },
+      "type": "object",
+      "x-restlet": {
+        "section": "not categorized yet"
+      }
+    },
+    "note_create_status": {
+      "properties": {
+        "note_id": {
+          "description": "Id of the note.",
+          "type": "integer"
+        },
+        "success": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "note_id"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "common_definitions"
+      }
+    },
+    "notes_response_item": {
+      "example": "test",
+      "properties": {
+        "body": {
+          "description": "Body of the note",
+          "example": "This is a test note.",
+          "type": "string"
+        },
+        "date_added": {
+          "description": "The date the note was created.",
+          "example": "2019-08-23",
+          "format": "date",
+          "type": "string"
+        },
+        "date_modified": {
+          "description": "Date of the last update to this note",
+          "example": "2019-08-24",
+          "format": "date",
+          "type": "string"
+        },
+        "deleted": {
+          "description": "Not sure what this field is?  Is this the date the note was deleted or the status of the load?",
+          "type": "string"
+        },
+        "entry_id": {
+          "description": "Entry id of the load associated with this note.",
+          "example": "93b30df654ccd860eb34775214877921",
+          "type": "string"
+        },
+        "id": {
+          "description": "The id of the note.",
+          "example": 55551,
+          "type": "integer"
+        },
+        "important": {
+          "description": "Identifies notes marked as important.",
+          "example": true,
+          "type": "boolean"
+        },
+        "title": {
+          "description": "Title of note.",
+          "example": "MO",
+          "type": "string"
+        }
+      },
+      "required": [
+        "body",
+        "date_added",
+        "date_modified",
+        "deleted",
+        "entry_id",
+        "id",
+        "important",
+        "title"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "BOARDS"
+      }
+    },
+    "patch_alert_properties": {
+      "properties": {
+        "alert_id": {
+          "description": "Specify which alert you are updating.",
+          "type": "integer"
+        },
+        "days_of_week": {
+          "description": "Limit the days that alerts are sent to the days listed.",
+          "items": {
+            "enum": [
+              "Sun",
+              "Mon",
+              "Tue",
+              "Wed",
+              "Thu",
+              "Fri",
+              "Sat"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "end_hour": {
+          "description": "A value corresponding to the hour of the day.",
+          "maximum": 21,
+          "minimum": 3,
+          "type": "integer"
+        },
+        "expires_after": {
+          "description": "The last day the alert will be valid. Valid time frames are from today until one year into the future.",
+          "format": "date",
+          "type": "string"
+        },
+        "list_order": {
+          "description": "Any value that is valid in the boards sort_order is also valid here.",
+          "type": "string"
+        },
+        "list_type": {
+          "description": "This specify the type of list that is returned, including disabling the list from being sent at all.",
+          "enum": [
+            "complete-list",
+            "only-new",
+            "not-active"
+          ],
+          "type": "string"
+        },
+        "minute_frequency": {
+          "description": "How many minutes to wait before sending another alert.",
+          "type": "integer"
+        },
+        "send_type": {
+          "description": "What method to send the alert list.",
+          "enum": [
+            "email",
+            "text"
+          ],
+          "type": "string"
+        },
+        "start_hour": {
+          "description": "A value corresponding to the hour of the day.",
+          "maximum": 21,
+          "minimum": 3,
+          "type": "integer"
+        },
+        "time_zone": {
+          "description": "A number between -1 and 2. -1 = EST, 0 = CST, 1 = MST, 2 = PST",
+          "maximum": 2,
+          "minimum": -1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "alert_id"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "ALERTS"
+      }
+    },
+    "post_optin_code_response": {
+      "example": {
+        "optin_code": "optin_code"
+      },
+      "properties": {
+        "optin_code": {
+          "description": "A text string with the code sent.",
+          "type": "string"
+        }
+      },
+      "type": "object",
+      "x-restlet": {
+        "section": "not categorized yet"
+      }
+    },
+    "post_posting_multiple_response": {
+      "example": "{\n  \"success\": true\n}",
+      "properties": {
+        "success": {
+          "description": "This will return true, and have a unique location in the location header.",
+          "type": "boolean"
+        }
+      },
+      "type": "object",
+      "x-restlet": {
+        "section": "POSTINGS"
+      }
+    },
+    "post_posting_type_action_body": {
+      "properties": {
+        "source_id": {
+          "description": "The posting id of the posting you are moving or copying. Optional for create.",
+          "type": "object"
+        },
+        "source_posting": {
+          "description": "The posting_type where you are moving or copying the posting from. Optional for create. Items can only be moved to like types. loads -> private_private loads.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "source_posting"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "not categorized yet"
+      }
+    },
+    "posting_post_response": {
+      "example": "{\n  \"list\": [\n    .....\n  ]\n}",
+      "properties": {
+        "list": {
+          "description": "A list of posting objects you can iterate over.",
+          "items": {
+            "$ref": "#/definitions/postings_post_response_item"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object",
+      "x-restlet": {
+        "section": "POSTINGS"
+      }
+    },
+    "postings_entry_object": {
+      "properties": {
+        "comment": {
+          "type": "string"
+        },
+        "custom_id": {
+          "description": "An identifier that can be provided for your own records.  (i.e.-Company load number) This field can be used to retrieve loads via GET.  This value must be unique. Custom Id's can have a maximum of 25 characters.",
+          "type": "string"
+        },
+        "destination_city": {
+          "description": "Delivery location city of load/truck. For truck type entries this field is optional or can be used to specify a region.",
+          "type": "string"
+        },
+        "destination_state": {
+          "description": "Delivery location state of load/truck. For truck type entries this field is optional.",
+          "type": "string"
+        },
+        "full_load": {
+          "description": "The load will be defaulted to full if this argument isn't included and marked to false.",
+          "type": "boolean"
+        },
+        "height": {
+          "description": "This number represents inches.",
+          "type": "integer"
+        },
+        "length": {
+          "description": "This number represents feet.",
+          "type": "number"
+        },
+        "origin_city": {
+          "description": "Origin city location of load or truck.  Required for all entry types.",
+          "type": "string"
+        },
+        "origin_state": {
+          "description": "Origin state location of load or truck.  Use the 2 digit state abbreviation.",
+          "maxLength": 2,
+          "minLength": 2,
+          "type": "string"
+        },
+        "other_trailer_types": {
+          "description": "Can be used to specify custom trailer types.",
+          "type": "string"
+        },
+        "pay_rate": {
+          "description": "This field will accept either the per mile rate, or gross rate.",
+          "type": "number"
+        },
+        "phone_extension": {
+          "description": "If not provided we will use the contact info associated with the users profile.",
+          "type": "integer"
+        },
+        "phone_number": {
+          "description": "If not provided we will use the contact info associated with the users profile.",
+          "type": "integer"
+        },
+        "receive_date": {
+          "description": "The date the load/truck should deliver.",
+          "format": "date",
+          "type": "string"
+        },
+        "ship_date": {
+          "description": "When posting loads this is the date the load should be picked up.  When posting trucks this is the date the truck is available to be loaded.",
+          "format": "date",
+          "type": "string"
+        },
+        "trailer_type": {
+          "description": "This can have 1 or more standard trailer types.",
+          "items": {
+            "enum": [
+              "V",
+              "VINT",
+              "SD",
+              "MX",
+              "HS",
+              "AC",
+              "LB",
+              "F+T",
+              "F",
+              "FINT",
+              "DD",
+              "V+V",
+              "V+A",
+              "CRG",
+              "HB",
+              "LA",
+              "PO",
+              "R",
+              "RINT",
+              "RGN",
+              "CV",
+              "DT",
+              "TNK",
+              "F+S",
+              "PNEU",
+              "CONT",
+              "OTHER"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "weight": {
+          "description": "This number represents pounds.",
+          "type": "integer"
+        },
+        "width": {
+          "description": "This number represents inches.",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "custom_id",
+        "origin_city",
+        "origin_state",
+        "ship_date",
+        "trailer_type"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "POSTINGS"
+      }
+    },
+    "postings_patch_object": {
+      "properties": {
+        "comment": {
+          "type": "string"
+        },
+        "custom_id": {
+          "description": "An identifier that can be provided for your own records. (i.e.-Company load number) This field can be used to retrieve loads via GET. This value must be unique.\nYou cannot update a custom_id once it is set. Please delete and reenter the load to change the custom_id.  Either posting_id or custom_id is required.",
+          "type": "string"
+        },
+        "destination_city": {
+          "description": "Delivery location city of load/truck.",
+          "type": "string"
+        },
+        "destination_state": {
+          "description": "Delivery location city of load/truck.",
+          "type": "string"
+        },
+        "full_load": {
+          "description": "This should only be used with loads.",
+          "type": "boolean"
+        },
+        "height": {
+          "description": "This number represents inches.",
+          "type": "integer"
+        },
+        "length": {
+          "description": "This number represents feet.",
+          "type": "number"
+        },
+        "origin_city": {
+          "description": "Origin city location of load or truck",
+          "type": "string"
+        },
+        "origin_state": {
+          "description": "Origin state location of load or truck",
+          "type": "string"
+        },
+        "other_trailer_types": {
+          "description": "Can be used to specify custom trailer types.",
+          "type": "string"
+        },
+        "pay_rate": {
+          "description": "This field will accept either the per mile rate, or gross rate.",
+          "type": "number"
+        },
+        "phone_extension": {
+          "description": "If not provided we will use the contact info associated with the users profile.",
+          "type": "integer"
+        },
+        "phone_number": {
+          "description": "If not provided we will use the contact info associated with the users profile.",
+          "type": "integer"
+        },
+        "posting_id": {
+          "description": "A unique id for each entry.  This value is returned via GET. \nEither posting_id or custom_id is required.",
+          "type": "integer"
+        },
+        "receive_date": {
+          "description": "The date the load/truck should deliver.",
+          "format": "date",
+          "type": "string"
+        },
+        "ship_date": {
+          "description": "When posting loads this is the date the load should be picked up.  When posting trucks this is the date the truck is available to be loaded.",
+          "format": "date",
+          "type": "string"
+        },
+        "trailer_type": {
+          "description": "This can have 1 or more standard trailer types.",
+          "items": {
+            "enum": [
+              "V",
+              "VINT",
+              "SD",
+              "MX",
+              "HS",
+              "AC",
+              "LB",
+              "F+T",
+              "F",
+              "FINT",
+              "DD",
+              "V+V",
+              "V+A",
+              "CRG",
+              "HB",
+              "LA",
+              "PO",
+              "R",
+              "RINT",
+              "RGN",
+              "CV",
+              "DT",
+              "TNK",
+              "F+S",
+              "PNEU",
+              "CONT",
+              "OTHER"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "weight": {
+          "description": "This number represents pounds.",
+          "type": "integer"
+        },
+        "width": {
+          "description": "This number represents inches.",
+          "type": "integer"
+        }
+      },
+      "type": "object",
+      "x-restlet": {
+        "section": "POSTINGS"
+      }
+    },
+    "postings_post_response_item": {
+      "properties": {
+        "comment": {
+          "type": "string"
+        },
+        "contact_name": {
+          "description": "This is generated from the logged in users profile information.",
+          "type": "string"
+        },
+        "custom_id": {
+          "description": "A unique identifier a user can provide for their own records.",
+          "type": "integer"
+        },
+        "destination_city": {
+          "description": "Delivery location city of load/truck.",
+          "type": "string"
+        },
+        "destination_state": {
+          "description": "Delivery location state of load/truck.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "full_load": {
+          "description": "For trucks this will always be false.",
+          "type": "boolean"
+        },
+        "height": {
+          "description": "This number represents inches.",
+          "type": "integer"
+        },
+        "length": {
+          "description": "This number represents feet.",
+          "type": "number"
+        },
+        "origin_city": {
+          "description": "Origin city location of load or truck",
+          "type": "string"
+        },
+        "origin_state": {
+          "description": "Origin state location of load or truck.",
+          "type": "string"
+        },
+        "other_trailer_types": {
+          "description": "To include custom trailer types.",
+          "type": "string"
+        },
+        "pay_rate": {
+          "description": "We expect one of 2 formats. either the per mile, or total sum.",
+          "type": "number"
+        },
+        "phone_extension": {
+          "description": "If not supplied and not in the user's profile this will be null.",
+          "type": "integer"
+        },
+        "phone_number": {
+          "description": "If not supplied, this is generated from the logged in users profile information.",
+          "type": "integer"
+        },
+        "posting_id": {
+          "description": "This is the unique ID of this post.",
+          "type": "integer"
+        },
+        "receive_date": {
+          "description": "The date the load/truck should deliver.",
+          "format": "date",
+          "type": "string"
+        },
+        "ship_date": {
+          "description": "The date you wish the load to be shipped.",
+          "format": "date",
+          "type": "string"
+        },
+        "trailer_type": {
+          "description": "This can have 1 or more standard trailer types.",
+          "items": {
+            "enum": [
+              "V",
+              "VINT",
+              "SD",
+              "MX",
+              "HS",
+              "AC",
+              "LB",
+              "F+T",
+              "F",
+              "FINT",
+              "DD",
+              "V+V",
+              "V+A",
+              "CRG",
+              "HB",
+              "LA",
+              "PO",
+              "R",
+              "RINT",
+              "RGN",
+              "CV",
+              "DT",
+              "TNK",
+              "F+S",
+              "PNEU",
+              "CONT",
+              "OTHER"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "weight": {
+          "description": "This number represents pounds.",
+          "type": "integer"
+        },
+        "width": {
+          "description": "This number represents inches.",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "comment",
+        "contact_name",
+        "custom_id",
+        "destination_city",
+        "destination_state",
+        "full_load",
+        "height",
+        "length",
+        "origin_city",
+        "origin_state",
+        "other_trailer_types",
+        "pay_rate",
+        "phone_extension",
+        "phone_number",
+        "posting_id",
+        "receive_date",
+        "ship_date",
+        "trailer_type",
+        "weight",
+        "width"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "POSTINGS"
+      }
+    },
+    "postings-post_or_patch_response": {
+      "example": "Success",
+      "properties": {
+        "list": {
+          "items": {
+            "properties": {
+              "code": {
+                "type": "integer"
+              },
+              "description": {
+                "description": "An explanation of what each code means.",
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "Success",
+                  "Error"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "status"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "list"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "POSTINGS"
+      }
+    },
+    "profile_object": {
+      "example": "{\n  \"address\": \"P.O. Box 131\",\n  \"city\": \"Chillicothe\",\n  \"company\": \"Direct Freight\",\n  \"contact_extension\": 333,\n  \"contact_name\": \"Joe Doe\",\n  \"contact_number\": 555-555-5555,\n  \"dot_number\": 123456,\n  \"fax_number\": \"555-555-5555\",\n  \"mc_number\": 123456,\n  \"mobile_carrier\": \"Company_X\",\n  \"mobile_number\": \"555-555-1234\",\n  \"state\": \"MO\",\n  \"web_page\": \"http://www.directfreight.com\",\n  \"zip\": 55555\n}",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "company": {
+          "description": "Company name. ",
+          "type": "string"
+        },
+        "contact_extension": {
+          "type": "integer"
+        },
+        "contact_name": {
+          "description": "Contact name. ",
+          "type": "string"
+        },
+        "contact_number": {
+          "type": "integer"
+        },
+        "dispatch_extension": {
+          "description": "Limited to 3 integers",
+          "type": "integer"
+        },
+        "dispatch_number": {
+          "type": "integer"
+        },
+        "dot_number": {
+          "type": "string"
+        },
+        "fax_number": {
+          "type": "integer"
+        },
+        "mc_number": {
+          "type": "string"
+        },
+        "mobile_carrier": {
+          "enum": [
+            "Other/Unknown",
+            "AT&T",
+            "Verizon",
+            "Sprint",
+            "T-Mobile",
+            "US Cellular",
+            "Nextel",
+            "Virgin Mobile",
+            "Boost Mobile",
+            "Straight Talk",
+            "Tracfone",
+            "NET10",
+            "Metro PCS",
+            "Cricket",
+            "Rogers",
+            "Fido",
+            "Bell Mobility",
+            "Telus",
+            "Clearnet",
+            "Solo Mobile",
+            "Koodo Mobile"
+          ],
+          "type": "string"
+        },
+        "mobile_number": {
+          "type": "integer"
+        },
+        "state": {
+          "type": "string"
+        },
+        "web_page": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        }
+      },
+      "type": "object",
+      "x-restlet": {
+        "section": "PROFILES"
+      }
+    },
+    "rename_document": {
+      "properties": {
+        "current_name": {
+          "description": "The document to be renamed. ",
+          "type": "string"
+        },
+        "new_name": {
+          "description": "Replacement name. ",
+          "type": "string"
+        }
+      },
+      "required": [
+        "current_name",
+        "new_name"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "PROFILES"
+      }
+    },
+    "reverse_geocode_response": {
+      "properties": {
+        "city": {
+          "type": "string"
+        },
+        "region_code": {
+          "type": "string"
+        },
+        "region_name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "city",
+        "region_code",
+        "region_name"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "LOCATIONS"
+      }
+    },
+    "success_status_response": {
+      "example": {
+        "status": "status"
+      },
+      "properties": {
+        "status": {
+          "description": "A text status like OPTIN, NORESPONSE, OPTOUT.",
+          "type": "string"
+        }
+      },
+      "type": "object",
+      "x-restlet": {
+        "section": "not categorized yet"
+      }
+    },
+    "toggle_hidden_companies": {
+      "properties": {
+        "company_name": {
+          "description": "The company name that need to be toggled. ",
+          "type": "string"
+        }
+      },
+      "required": [
+        "company_name"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "not categorized yet"
+      }
+    },
+    "toggle_hidden_entries": {
+      "properties": {
+        "entry_id": {
+          "description": "The entry that need to be toggled. ",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "entry_id"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "BOARDS"
+      }
+    },
+    "trailer_type": {
+      "description": "These are the officially supported trailer types.",
+      "items": {
+        "enum": [
+          "V",
+          "VINT",
+          "SD",
+          "MX",
+          "HS",
+          "AC",
+          "LB",
+          "F+T",
+          "F",
+          "FINT",
+          "DD",
+          "V+V",
+          "V+A",
+          "CRG",
+          "HB",
+          "LA",
+          "PO",
+          "R",
+          "RINT",
+          "RGN",
+          "CV",
+          "DT",
+          "TNK",
+          "F+S",
+          "PNEU",
+          "CONT",
+          "OTHER"
+        ],
+        "type": "string"
+      },
+      "type": "array",
+      "x-restlet": {
+        "section": "common_definitions"
+      }
+    },
+    "update_notes_status": {
+      "properties": {
+        "success": {
+          "type": "integer"
+        }
+      },
+      "type": "object",
+      "x-restlet": {
+        "section": "common_definitions"
+      }
+    },
+    "update_notes": {
+      "properties": {
+        "body": {
+          "type": "string"
+        },
+        "note_id": {
+          "description": "Id of the note",
+          "type": "integer"
+        },
+        "title": {
+          "description": "Subject of the note. ",
+          "type": "string"
+        }
+      },
+      "required": [
+        "body",
+        "note_id",
+        "title"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "BOARDS"
+      }
+    },
+    "upload_document": {
+      "properties": {
+        "The": {
+          "description": "file to be uploaded. ",
+          "type": "object"
+        }
+      },
+      "required": [
+        "The"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "PROFILES"
+      }
+    },
+    "user": {
+      "properties": {
+        "email": {
+          "description": "This must be a valid e-mail. ",
+          "type": "string"
+        },
+        "password": {
+          "description": "Currently this is a 6-10 digit alphanumeric password. ",
+          "type": "string"
+        }
+      },
+      "required": [
+        "email",
+        "password"
+      ],
+      "type": "object",
+      "x-restlet": {
+        "section": "END_USER_AUTHENTICATIONS"
+      }
+    }
+  }
+}
